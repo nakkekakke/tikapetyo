@@ -23,7 +23,6 @@ public class Database {
         try (Connection conn = getConnection()) {
             Statement st = conn.createStatement();
 
-            // suoritetaan komennot
             for (String lause : lauseet) {
                 System.out.println("Running command >> " + lause);
                 st.executeUpdate(lause);
@@ -38,11 +37,10 @@ public class Database {
     private List<String> sqliteLauseet() {
         ArrayList<String> lista = new ArrayList<>();
 
-        // tietokantataulujen luomiseen tarvittavat komennot suoritusjärjestyksessä
-        lista.add("CREATE TABLE Opiskelija (id integer PRIMARY KEY, nimi varchar(255));");
-        lista.add("INSERT INTO Opiskelija (nimi) VALUES ('Platon');");
-        lista.add("INSERT INTO Opiskelija (nimi) VALUES ('Aristoteles');");
-        lista.add("INSERT INTO Opiskelija (nimi) VALUES ('Homeros');");
+        // tietokantataulujen luomiseen tarvittavat komennot suoritusjärjestyksessä : EI VALMIS
+        lista.add("CREATE TABLE Title (id integer PRIMARY KEY, person_id integer, "
+                + "nimi varchar(255), julkaisuvuosi integer, pituus integer, "
+                + "FOREIGN KEY (person_id) REFERENCES PersonTitle(id);");
 
         return lista;
     }

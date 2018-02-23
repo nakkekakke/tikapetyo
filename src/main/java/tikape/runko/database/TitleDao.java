@@ -11,65 +11,80 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import tikape.runko.domain.Opiskelija;
+import tikape.runko.domain.Title;
 
-public class OpiskelijaDao implements Dao<Opiskelija, Integer> {
+public class TitleDao implements Dao<Title, Integer> {
 
     private Database database;
 
-    public OpiskelijaDao(Database database) {
+    public TitleDao(Database database) {
         this.database = database;
     }
 
     @Override
-    public Opiskelija findOne(Integer key) throws SQLException {
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Opiskelija WHERE id = ?");
+    public Title findOne(Integer key) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE id = ?");
         stmt.setObject(1, key);
-
         ResultSet rs = stmt.executeQuery();
-        boolean hasOne = rs.next();
-        if (!hasOne) {
+        
+        if (!rs.next()) {
             return null;
         }
 
-        Integer id = rs.getInt("id");
-        String nimi = rs.getString("nimi");
-
-        Opiskelija o = new Opiskelija(id, nimi);
+        Title title = new Title(rs.getInt("id"), 
+                rs.getString("nimi"), 
+                rs.getInt("julkaisuvuosi"), 
+                rs.getInt("pituus"));
 
         rs.close();
         stmt.close();
-        connection.close();
+        conn.close();
 
-        return o;
+        return title;
     }
 
     @Override
-    public List<Opiskelija> findAll() throws SQLException {
+    public List<Title> findAll() throws SQLException {
 
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Opiskelija");
-
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title");
         ResultSet rs = stmt.executeQuery();
-        List<Opiskelija> opiskelijat = new ArrayList<>();
+        
+        List<Title> titles = new ArrayList<>();
+        
         while (rs.next()) {
-            Integer id = rs.getInt("id");
-            String nimi = rs.getString("nimi");
+            Title title = new Title(rs.getInt("id"), 
+                rs.getString("nimi"), 
+                rs.getInt("julkaisuvuosi"), 
+                rs.getInt("pituus"));
 
-            opiskelijat.add(new Opiskelija(id, nimi));
+            titles.add(title);
         }
 
         rs.close();
         stmt.close();
-        connection.close();
+        conn.close();
 
-        return opiskelijat;
+        return titles;
     }
 
     @Override
     public void delete(Integer key) throws SQLException {
         // ei toteutettu
+    }
+
+    @Override
+    public Title saveOrUpdate(Title object) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    private Title save(Title title) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    private Title update(Title title) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
