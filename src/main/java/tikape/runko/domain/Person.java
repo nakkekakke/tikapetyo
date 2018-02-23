@@ -1,20 +1,18 @@
 package tikape.runko.domain;
 
-public class Opiskelija {
-
-    private Integer id;
+public class Person {
+    private int id;
     private String nimi;
-
-    public Opiskelija(Integer id, String nimi) {
-        this.id = id;
+    
+    public Person(int id, String nimi) {
         this.nimi = nimi;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -25,5 +23,5 @@ public class Opiskelija {
     public void setNimi(String nimi) {
         this.nimi = nimi;
     }
-
+    
 }
