@@ -13,6 +13,7 @@ public class Title {
     private List<Person> kirjoittajalista;
     private Person ohjaaja;
     private Genre genre;
+    private String kuvaus;
 
     public Title(int id, String nimi, int julkaisuvuosi, int kesto) {
         this.id = id;
@@ -77,6 +78,14 @@ public class Title {
     
     public void setOhjaaja(Person ohjaaja) {
         this.ohjaaja = ohjaaja;
+    }
+    
+    public String getKuvaus() {
+        return kuvaus;
+    }
+    
+    public void setKuvaus(String kuvaus) {
+        this.kuvaus = kuvaus;
     }
 
 }
