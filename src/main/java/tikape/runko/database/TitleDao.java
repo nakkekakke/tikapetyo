@@ -316,7 +316,7 @@ public class TitleDao implements Dao<Title, Integer> {
         return update(title);
     }
     
-    public Title addTitle(Title title) throws SQLException {
+    private Title addTitle(Title title) throws SQLException {
 
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Title (director_id, genre_id, name, year, description, length) values (?, ?, ?, ?, ?, ?)");
