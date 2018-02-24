@@ -18,6 +18,7 @@ public class Main {
         Database database = new Database("jdbc:sqlite:imbd.db");
 
         TitleDao titleDao = new TitleDao(database);
+        PersonDao personDao = new PersonDao(database);
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -68,10 +69,11 @@ public class Main {
         get("/titles/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
+            title.getDirector().setBio("lol");
             map.put("name", title.getName());
             map.put("year", title.getYear());
             map.put("genre", title.getGenre().getName());
-            map.put("director", title.getDirector().getName());
+            map.put("director", title.getDirector().getBio());
             map.put("length", title.getLength());
             map.put("desc", title.getDescription());
             map.put("delete", "/titles/" + title.getId() + "/delete");
@@ -109,7 +111,7 @@ public class Main {
             
             Person person = new Person(2, req.queryParams("name"));
             
-            
+            personDao.saveOrUpdate(person); //toimiiko?
             
             res.redirect("/add");
             return"";
