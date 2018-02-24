@@ -16,7 +16,7 @@ public class Main {
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
-            map.put("testi", "Tervehdys, cunts");
+            map.put("testi", "Tervehdys, cuntssss");
 
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
@@ -25,7 +25,7 @@ public class Main {
             HashMap map = new HashMap<>();
             map.put("titles", titleDao.findAll());
 
-            return new ModelAndView(map, "titles");
+            return new ModelAndView(map, "sivu1");
         }, new ThymeleafTemplateEngine());
 
         get("/titles/:id", (req, res) -> {
