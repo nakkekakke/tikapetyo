@@ -102,6 +102,96 @@ public class TitleDao implements Dao<Title, Integer> {
         return titles;
     }
 
+    public List<Title> findTitlesWithPerson(Person person) throws SQLException {
+
+        
+        //Actor
+        StringBuilder q = new StringBuilder();
+        
+        q.append("SELECT * FROM Title, ActorTitle, Person where ");
+        q.append("ActorTitle.actor_id = Person.id and ");
+        q.append("ActorTitle.title_id = Title.id and ");
+        q.append("Person.id = " + person.getId());
+        
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(q.toString());
+        ResultSet rs = stmt.executeQuery();
+
+        List<Title> titles = new ArrayList<>();
+
+        while (rs.next()) {
+            Title title = new Title(rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getInt("year"),
+                    rs.getInt("length"),
+                    rs.getString("description"));
+            
+            title.setDirector(personDao.findOne(rs.getInt("director_id")));
+            title.setGenre(genreDao.findOne(rs.getInt("genre_id")));
+
+            titles.add(title);
+        }
+
+        rs.close();
+        stmt.close();
+        
+        //Writer
+        q = new StringBuilder();
+        
+        q.append("SELECT * FROM Title, WriterTitle, Person where ");
+        q.append("WriterTitle.writer_id = Person.id and ");
+        q.append("WriterTitle.title_id = Title.id and ");
+        q.append("Person.id = " + person.getId());
+        
+
+        stmt = conn.prepareStatement(q.toString());
+        rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            Title title = new Title(rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getInt("year"),
+                    rs.getInt("length"),
+                    rs.getString("description"));
+            
+            title.setDirector(personDao.findOne(rs.getInt("director_id")));
+            title.setGenre(genreDao.findOne(rs.getInt("genre_id")));
+
+            titles.add(title);
+        }
+
+        rs.close();
+        stmt.close();
+        
+        //Director
+        q = new StringBuilder();
+        
+        q.append("SELECT * FROM Title, Person where Title.director_id = Person.id");
+        
+        stmt = conn.prepareStatement(q.toString());
+        rs = stmt.executeQuery();
+        
+        while (rs.next()) {
+            Title title = new Title(rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getInt("year"),
+                    rs.getInt("length"),
+                    rs.getString("description"));
+            
+            title.setDirector(personDao.findOne(rs.getInt("director_id")));
+            title.setGenre(genreDao.findOne(rs.getInt("genre_id")));
+
+            titles.add(title);
+        }
+        
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return titles;
+    }
+
+    
     @Override
     public void delete(Integer key) throws SQLException {
 

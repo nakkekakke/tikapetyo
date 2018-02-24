@@ -6,7 +6,9 @@ public class Person {
     private String bio;
     
     public Person(int id, String nimi) {
+        this.id = id;
         this.nimi = nimi;
+        bio = "Default bio";
     }
 
     public int getId() {
