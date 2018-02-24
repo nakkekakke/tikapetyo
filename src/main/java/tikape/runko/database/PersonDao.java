@@ -134,9 +134,10 @@ public class PersonDao implements Dao<Person, Integer> {
     private Person save(Person person) throws SQLException {
 
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Person (name) values (?)");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Person (name,bio) values (?,?)");
 
         stmt.setString(1, person.getName());
+        stmt.setString(2, person.getBio());
         
         stmt.execute();
         stmt.close();

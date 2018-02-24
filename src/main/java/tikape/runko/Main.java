@@ -6,8 +6,10 @@ import spark.ModelAndView;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.Database;
+import tikape.runko.database.GenreDao;
 import tikape.runko.database.PersonDao;
 import tikape.runko.database.TitleDao;
+import tikape.runko.domain.Genre;
 import tikape.runko.domain.Person;
 import tikape.runko.domain.Title;
 
@@ -18,6 +20,7 @@ public class Main {
 
         TitleDao titleDao = new TitleDao(database);
         PersonDao personDao = new PersonDao(database);
+        GenreDao genreDao = new GenreDao(database);
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -97,14 +100,40 @@ public class Main {
         get("/people/:id/delete", (req, res) -> {
             
             if (Integer.parseInt(req.params("id")) == 1) {
-                System.out.println("test");
                 res.redirect("/deleteError");
+                return null;
             }
             
             HashMap map = new HashMap<>();
             Person person = personDao.findOne(Integer.parseInt(req.params("id")));
             
             personDao.delete(Integer.parseInt(req.params("id")));
+            
+            res.redirect("/");
+            return null;
+        }, new ThymeleafTemplateEngine());
+        
+        get("/genre/:id", (req, res) -> {
+            HashMap map = new HashMap<>();
+            Genre genre = genreDao.findOne(Integer.parseInt(req.params("id")));
+            map.put("name", genre.getName());
+            
+            map.put("delete", "/genre/" + genre.getId() + "/delete");
+
+            return new ModelAndView(map, "genre");
+        }, new ThymeleafTemplateEngine());
+        
+        get("/genre/:id/delete", (req, res) -> {
+            
+            if (Integer.parseInt(req.params("id")) == 1) {
+                res.redirect("/deleteError");
+                return null;
+            }
+            
+            HashMap map = new HashMap<>();
+            Genre genre = genreDao.findOne(Integer.parseInt(req.params("id")));
+            
+            genreDao.delete(Integer.parseInt(req.params("id")));
             
             res.redirect("/");
             return null;
@@ -135,7 +164,17 @@ public class Main {
             
             Person person = new Person(2, req.queryParams("name"));
             
-            personDao.saveOrUpdate(person); //toimiiko?
+            personDao.saveOrUpdate(person);
+            
+            res.redirect("/add");
+            return"";
+        });
+        
+        post("/addGenre", (req, res) -> {
+            
+            Genre genre = new Genre(2, req.queryParams("name"));
+            
+            genreDao.saveOrUpdate(genre);
             
             res.redirect("/add");
             return"";
