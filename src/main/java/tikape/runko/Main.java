@@ -40,7 +40,7 @@ public class Main {
                 int rnd = (int)(Math.random()*titles.size())+1;
                 String kohde = "/titles/" + rnd;
                 map.put("kohde", kohde);
-                String kohdeNimi = titleDao.findOne(rnd).getNimi();
+                String kohdeNimi = titleDao.findOne(rnd).getName();
                 map.put("kohdeNimi", kohdeNimi);
             }
             
@@ -65,7 +65,7 @@ public class Main {
         get("/titles/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
-            map.put("name", title.getNimi());
+            map.put("name", title.getName());
             map.put("title", title);
 
             return new ModelAndView(map, "title");
