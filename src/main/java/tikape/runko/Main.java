@@ -112,9 +112,6 @@ public class Main {
         
         get("/deleteError", (req, res) -> {
             HashMap map = new HashMap<>();
-            Person person = personDao.findOne(Integer.parseInt(req.params("id")));
-            
-            personDao.delete(Integer.parseInt(req.params("id")));
             
             return new ModelAndView(map, "deleteError");
         }, new ThymeleafTemplateEngine());
