@@ -164,11 +164,7 @@ public class TitleDao implements Dao<Title, Integer> {
         stmt.close();
         
         //Director
-        q = new StringBuilder();
-        
-        q.append("SELECT * FROM Title, Person where Title.director_id = Person.id");
-        
-        stmt = conn.prepareStatement(q.toString());
+        stmt = conn.prepareStatement("SELECT * FROM Title, Person where Title.director_id = Person.id");
         rs = stmt.executeQuery();
         
         while (rs.next()) {
