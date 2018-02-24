@@ -111,7 +111,8 @@ public class TitleDao implements Dao<Title, Integer> {
         q.append("SELECT * FROM Title, ActorTitle, Person where ");
         q.append("ActorTitle.actor_id = Person.id and ");
         q.append("ActorTitle.title_id = Title.id and ");
-        q.append("Person.id = " + person.getId());
+        q.append("Person.id = ");
+        q.append(person.getId());
         
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(q.toString());
@@ -141,7 +142,8 @@ public class TitleDao implements Dao<Title, Integer> {
         q.append("SELECT * FROM Title, WriterTitle, Person where ");
         q.append("WriterTitle.writer_id = Person.id and ");
         q.append("WriterTitle.title_id = Title.id and ");
-        q.append("Person.id = " + person.getId());
+        q.append("Person.id = ");
+        q.append(person.getId());
         
 
         stmt = conn.prepareStatement(q.toString());
@@ -196,7 +198,7 @@ public class TitleDao implements Dao<Title, Integer> {
         }
 
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Title WHERE Title.id = " + key + ";");
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Title WHERE Title.id = " + key);
         
         stmt.executeUpdate();
 
@@ -205,23 +207,7 @@ public class TitleDao implements Dao<Title, Integer> {
 
     }
 
-    public void addTitle(Title title) throws SQLException {
-
-        Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Title (director_id, genre_id, name, year, description, length) values (?, ?, ?, ?, ?, ?)");
-                
-        stmt.setInt(1, title.getDirector().getId());
-        stmt.setInt(2, title.getGenre().getId());
-        stmt.setString(3, title.getName());
-        stmt.setInt(4, title.getYear());
-        stmt.setString(5, title.getDescription());
-        stmt.setInt(6, title.getLength());
-        
-        stmt.execute();
-        stmt.close();
-        conn.close();
-
-    }
+    
 
     public Person findDirector(int title) throws SQLException {
 
@@ -256,7 +242,7 @@ public class TitleDao implements Dao<Title, Integer> {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person, Title, ActorTitle "
                 + "where ActorTitle.title_id = Title.id "
                 + "and ActorTitle.actor_id = Person.id "
-                + "and Title.id = " + title + ";");
+                + "and Title.id = " + title);
 
         ResultSet results = stmt.executeQuery();
 
@@ -268,7 +254,7 @@ public class TitleDao implements Dao<Title, Integer> {
             persons.add(newPerson);
 
         }
-
+        results.close();
         stmt.close();
         conn.close();
 
@@ -284,7 +270,7 @@ public class TitleDao implements Dao<Title, Integer> {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person, Title, WriterTitle "
                 + "where WriterTitle.title_id = Title "
                 + "and WriterTitle.writer_id = Person.id "
-                + "and Title.id = " + title + ";");
+                + "and Title.id = " + title);
 
         ResultSet results = stmt.executeQuery();
 
@@ -323,16 +309,67 @@ public class TitleDao implements Dao<Title, Integer> {
     }
 
     @Override
-    public Title saveOrUpdate(Title object) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Title saveOrUpdate(Title title) throws SQLException {
+        if (findOne(title.getId()) == null) {
+            return addTitle(title);
+        }
+        return update(title);
+    }
+    
+    public Title addTitle(Title title) throws SQLException {
+
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Title (director_id, genre_id, name, year, description, length) values (?, ?, ?, ?, ?, ?)");
+                
+        stmt.setInt(1, title.getDirector().getId());
+        stmt.setInt(2, title.getGenre().getId());
+        stmt.setString(3, title.getName());
+        stmt.setInt(4, title.getYear());
+        stmt.setString(5, title.getDescription());
+        stmt.setInt(6, title.getLength());
+        
+        stmt.execute();
+        stmt.close();
+        
+        stmt = conn.prepareStatement("SELECT * FROM Title WHERE director_id = ? AND name = ?");
+        
+        stmt.setInt(1, title.getDirector().getId());
+        stmt.setString(2, title.getName());
+        
+        ResultSet rs = stmt.executeQuery();
+        
+        if (!rs.next()) {
+            return null;
+        }
+        
+        rs.close();
+        stmt.close();
+        conn.close();
+        
+        return title;
     }
 
-    private Title save(Title title) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     private Title update(Title title) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Title SET director_id = ?, genre_id = ? name = ? year = ?, description = ? length = ? WHERE id = ?)");
+        
+        stmt.setInt(1, title.getDirector().getId());
+        stmt.setInt(2, title.getGenre().getId());
+        stmt.setString(3, title.getName());
+        stmt.setInt(4, title.getYear());
+        stmt.setString(5, title.getDescription());
+        stmt.setInt(6, title.getLength());
+        stmt.setInt(6, title.getId());
+        
+        stmt.executeUpdate();
+        
+        stmt.close();
+        conn.close();
+        
+        return title;
+        
     }
 
 }
