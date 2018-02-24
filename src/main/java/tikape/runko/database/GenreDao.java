@@ -5,6 +5,9 @@
  */
 package tikape.runko.database;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import tikape.runko.domain.Genre;
@@ -24,7 +27,24 @@ public class GenreDao implements Dao<Genre, Integer> {
     
     @Override
     public Genre findOne(Integer key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Genre WHERE Genre.id = ?");
+        stmt.setObject(1, key);
+        ResultSet rs = stmt.executeQuery();
+
+        if (!rs.next()) {
+            return null;
+        }
+
+        Genre genre = new Genre(rs.getInt("id"), rs.getString("name"));
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return genre;
+        
     }
 
     @Override

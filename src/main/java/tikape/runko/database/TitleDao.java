@@ -43,6 +43,9 @@ public class TitleDao implements Dao<Title, Integer> {
                 rs.getInt("year"),
                 rs.getInt("length"),
                 rs.getString("description"));
+        
+        title.setDirector(personDao.findOne(rs.getInt("director_id")));
+        title.setGenre(genreDao.findOne(rs.getInt("genre_id")));
 
         rs.close();
         stmt.close();
