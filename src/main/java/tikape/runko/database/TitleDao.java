@@ -16,10 +16,13 @@ import tikape.runko.domain.Title;
 
 public class TitleDao implements Dao<Title, Integer> {
 
+    private GenreDao genreDao;
+    
     private Database database;
 
     public TitleDao(Database database) {
         this.database = database;
+        
     }
 
     @Override
@@ -34,9 +37,10 @@ public class TitleDao implements Dao<Title, Integer> {
         }
 
         Title title = new Title(rs.getInt("id"),
-                rs.getString("nimi"),
-                rs.getInt("julkaisuvuosi"),
-                rs.getInt("pituus"));
+                rs.getString("name"),
+                rs.getInt("year"),
+                rs.getInt("length"),
+                rs.getString("description"));
 
         rs.close();
         stmt.close();
@@ -55,10 +59,11 @@ public class TitleDao implements Dao<Title, Integer> {
         List<Title> titles = new ArrayList<>();
 
         while (rs.next()) {
-            Title title = new Title(rs.getInt("id"),
-                    rs.getString("nimi"),
-                    rs.getInt("julkaisuvuosi"),
-                    rs.getInt("pituus"));
+            Title title = new Title(rs.getInt("id"),                 
+                    rs.getString("name"),
+                    rs.getInt("year"),
+                    rs.getInt("length"),
+                    rs.getString("description"));
 
             titles.add(title);
         }

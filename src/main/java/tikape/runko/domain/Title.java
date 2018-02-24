@@ -6,29 +6,32 @@ import java.util.ArrayList;
 public class Title {
 
     private int id;
-    private String nimi;
-    private int julkaisuvuosi;
-    private int kesto;
-    private List<Person> nayttelijalista;
-    private List<Person> kirjoittajalista;
-    private Person ohjaaja;
+    private Person director;
     private Genre genre;
+    private String name;
+    private int year;
+    private String description;
+    private int length;
+    private List<Person> actors;
+    private List<Person> writers;
+    
 
-    public Title(int id, String nimi, int julkaisuvuosi, int kesto) {
+    public Title(int id, String nimi, int julkaisuvuosi, int kesto, String description) {
         this.id = id;
-        this.nimi = nimi;
-        this.julkaisuvuosi = julkaisuvuosi;
-        this.kesto = kesto;
-        this.nayttelijalista = new ArrayList<>();
-        this.kirjoittajalista = new ArrayList<>();
+        this.name = nimi;
+        this.year = julkaisuvuosi;
+        this.length = kesto;
+        this.description = description;
+        this.actors = new ArrayList<>();
+        this.writers = new ArrayList<>();
     }
 
     public int getPituus() {
-        return kesto;
+        return length;
     }
 
     public void setPituus(int kesto) {
-        this.kesto = kesto;
+        this.length = kesto;
     }
 
     public int getId() {
@@ -40,27 +43,27 @@ public class Title {
     }
 
     public String getNimi() {
-        return nimi;
+        return name;
     }
 
     public void setNimi(String nimi) {
-        this.nimi = nimi;
+        this.name = nimi;
     }
 
     public int getJulkaisuvuosi() {
-        return julkaisuvuosi;
+        return year;
     }
 
     public void setJulkaisuvuosi(int julkaisuvuosi) {
-        this.julkaisuvuosi = julkaisuvuosi;
+        this.year = julkaisuvuosi;
     }
 
     public List<Person> getNayttelijalista() {
-        return nayttelijalista;
+        return actors;
     }
     
     public List<Person> getKirjoittajalista() {
-        return kirjoittajalista;
+        return writers;
     }
     
     public Genre getGenre() {
@@ -72,11 +75,11 @@ public class Title {
     }
     
     public Person getOhjaaja() {
-        return ohjaaja;
+        return director;
     }
     
     public void setOhjaaja(Person ohjaaja) {
-        this.ohjaaja = ohjaaja;
+        this.director = ohjaaja;
     }
 
 }
