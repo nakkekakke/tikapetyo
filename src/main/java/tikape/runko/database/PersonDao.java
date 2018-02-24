@@ -47,7 +47,7 @@ public class PersonDao implements Dao<Person, Integer> {
         return person;
         
     }
-
+    
     @Override
     public List<Person> findAll() throws SQLException {
         
@@ -86,7 +86,7 @@ public class PersonDao implements Dao<Person, Integer> {
 
     }
     
-    public int getAndAddUserId(String user) throws SQLException {
+    public int getAndAddPersonId(String user) throws SQLException {
 
         String query = "Select Person.id from Person where Person.name = '" + user + "';";
 
@@ -101,7 +101,7 @@ public class PersonDao implements Dao<Person, Integer> {
         } else {
             PreparedStatement userStmt = c.prepareStatement("INSERT INTO Person (name, bio) values ('" + user + "', 'Default bio');");
             userStmt.execute();
-            return getAndAddUserId(user);
+            return getAndAddPersonId(user);
         }
     }
     
