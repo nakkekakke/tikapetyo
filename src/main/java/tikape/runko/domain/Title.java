@@ -11,6 +11,7 @@ public class Title {
     private int kesto;
     private List<Person> nayttelijalista;
     private List<Person> kirjoittajalista;
+    private Person ohjaaja;
     private Genre genre;
 
     public Title(int id, String nimi, int julkaisuvuosi, int kesto) {
@@ -68,6 +69,14 @@ public class Title {
     
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }
+    
+    public Person getOhjaaja() {
+        return ohjaaja;
+    }
+    
+    public void setOhjaaja(Person ohjaaja) {
+        this.ohjaaja = ohjaaja;
     }
 
 }
