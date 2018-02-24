@@ -165,6 +165,30 @@ public class PersonDao implements Dao<Person, Integer> {
         
         return person;
     }
+    
+    public List<Person> searchPersonsByName(String name) throws SQLException {
+        
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person WHERE Person.name LIKE '%" + name + "%';");
+        ResultSet rs = stmt.executeQuery();
+
+        List<Person> persons = new ArrayList<>();
+
+        while (rs.next()) {
+            Person title = new Person(rs.getInt("id"),
+                    rs.getString("name"));
+            
+
+            persons.add(title);
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return persons;
+        
+    }
 
 
     private Person update(Person person) throws SQLException {
