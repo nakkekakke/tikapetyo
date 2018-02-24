@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Genre;
 import tikape.runko.domain.Person;
@@ -69,7 +70,21 @@ public class GenreDao implements Dao<Genre, Integer> {
     
     @Override
     public List<Genre> findAll() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title");
+        ResultSet rs = stmt.executeQuery();
+
+        List<Genre> genres = new ArrayList<>();
+
+        while (rs.next()) {
+            genres.add(new Genre(rs.getInt("id"), rs.getString("name")));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return genres;
     }
 
     @Override
@@ -80,11 +95,14 @@ public class GenreDao implements Dao<Genre, Integer> {
     @Override
     public void delete(Integer key) throws SQLException {
         
-        Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Genre WHERE Genre.id = " + key + ";");
-        if (!stmt.execute()) {
-            System.out.println("QUERY WAS NOT EXECUTED!");
+        if (findOne(key) == null) {
+            System.out.println("QUERY WAS NOT EXECUTED!");;
         }
+
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Title WHERE Title.id = " + key);
+        
+        stmt.executeUpdate();
 
         stmt.close();
         conn.close();

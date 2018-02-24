@@ -75,11 +75,14 @@ public class PersonDao implements Dao<Person, Integer> {
     @Override
     public void delete(Integer key) throws SQLException {
 
-        Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Person WHERE Person.id = " + key + ";");
-        if (!stmt.execute()) {
+        if (findOne(key) == null) {
             System.out.println("QUERY WAS NOT EXECUTED!");
         }
+
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Title WHERE Title.id = " + key);
+        
+        stmt.executeUpdate();
 
         stmt.close();
         conn.close();
@@ -112,6 +115,51 @@ public class PersonDao implements Dao<Person, Integer> {
     @Override
     public Person saveOrUpdate(Person object) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private Person addTitle(Person person) throws SQLException {
+
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Person (name) values (?)");
+
+        stmt.setString(1, person.getName());
+        
+        stmt.execute();
+        stmt.close();
+        
+        stmt = conn.prepareStatement("SELECT * FROM Person WHERE name = ?");
+        
+        stmt.setString(1, person.getName());
+        
+        ResultSet rs = stmt.executeQuery();
+        
+        if (!rs.next()) {
+            return null;
+        }
+        
+        rs.close();
+        stmt.close();
+        conn.close();
+        
+        return person;
+    }
+
+
+    private Person update(Person person) throws SQLException {
+        
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Person SET name = ? WHERE id = ?)");
+        
+        stmt.setString(1, person.getName());
+        stmt.setInt(2, person.getId());
+        
+        stmt.executeUpdate();
+        
+        stmt.close();
+        conn.close();
+        
+        return person;
+        
     }
     
 }
