@@ -48,6 +48,25 @@ public class PersonDao implements Dao<Person, Integer> {
         
     }
     
+        public Person findOneWithName(String name) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person WHERE name = ?");
+        stmt.setString(1, name);
+        ResultSet rs = stmt.executeQuery();
+
+        if (!rs.next()) {
+            return null;
+        }
+
+        Person person = new Person(rs.getInt("id"), rs.getString("name"));
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return person;
+    }
+    
     @Override
     public List<Person> findAll() throws SQLException {
         
@@ -113,11 +132,14 @@ public class PersonDao implements Dao<Person, Integer> {
     }
     
     @Override
-    public Person saveOrUpdate(Person object) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Person saveOrUpdate(Person person) throws SQLException {
+        if (findOneWithName(person.getName()) == null) {
+            return save(person);
+        }
+        return update(person);
     }
     
-    private Person addTitle(Person person) throws SQLException {
+    private Person save(Person person) throws SQLException {
 
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Person (name) values (?)");

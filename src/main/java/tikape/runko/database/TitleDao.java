@@ -18,7 +18,6 @@ public class TitleDao implements Dao<Title, Integer> {
 
     private GenreDao genreDao;
     private PersonDao personDao;
-
     private Database database;
 
     public TitleDao(Database database) {

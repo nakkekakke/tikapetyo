@@ -47,6 +47,25 @@ public class GenreDao implements Dao<Genre, Integer> {
         return genre;
         
     }
+    
+    public Genre findOneWithName(String name) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Genre WHERE name = ?");
+        stmt.setString(1, name);
+        ResultSet rs = stmt.executeQuery();
+
+        if (!rs.next()) {
+            return null;
+        }
+
+        Genre genre = new Genre(rs.getInt("id"), rs.getString("name"));
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return genre;
+    }
 
     public int getAndAddGenreId(String genre) throws SQLException {
 
@@ -88,8 +107,56 @@ public class GenreDao implements Dao<Genre, Integer> {
     }
 
     @Override
-    public Genre saveOrUpdate(Genre object) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Genre saveOrUpdate(Genre genre) throws SQLException {
+        if (findOneWithName(genre.getName()) == null) {
+            return save(genre);
+        }
+        return update(genre);
+    }
+    
+     private Genre save(Genre genre) throws SQLException {
+
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Genre (name) values (?)");
+
+        stmt.setString(1, genre.getName());
+        
+        stmt.execute();
+        stmt.close();
+        
+        stmt = conn.prepareStatement("SELECT * FROM Genre WHERE name = ?");
+        
+        stmt.setString(1, genre.getName());
+        
+        ResultSet rs = stmt.executeQuery();
+        
+        if (!rs.next()) {
+            return null;
+        }
+        
+        rs.close();
+        stmt.close();
+        conn.close();
+        
+        return genre;
+    }
+
+
+    private Genre update(Genre genre) throws SQLException {
+        
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Genre SET name = ? WHERE id = ?)");
+        
+        stmt.setString(1, genre.getName());
+        stmt.setInt(2, genre.getId());
+        
+        stmt.executeUpdate();
+        
+        stmt.close();
+        conn.close();
+        
+        return genre;
+        
     }
 
     @Override
