@@ -69,8 +69,19 @@ public class Main {
             map.put("year", title.getYear());
             map.put("genre", title.getGenre().getName());
             map.put("director", title.getDirector().getName());
+            map.put("length", title.getLength());
+            map.put("desc", title.getDescription());
+            map.put("delete", "/titles/" + title.getId() + "/delete");
 
             return new ModelAndView(map, "title");
+        }, new ThymeleafTemplateEngine());
+        
+        get("/titles/:id/delete", (req, res) -> {
+            HashMap map = new HashMap<>();
+            Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
+            
+
+            return new ModelAndView(map, "sivu" + title.getId());
         }, new ThymeleafTemplateEngine());
     }
 }

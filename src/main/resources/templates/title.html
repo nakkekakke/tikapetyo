@@ -2,16 +2,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
     <head>
-        <title>Sivu 2</title>
+        <title th:text="${name}">name</title>
         <meta charset="utf-8" />
     </head>
 
     <body>
-        <h1 th:text="${name}">Title</h1>
-		<h5 th:text="${year}">Year</h5>
-		<h4 th:text="${director}">Director</h4>
-		<h4 th:text="${genre}">Genre</h4>
-
+        <h1><span th:text="${name}">Title</span>&emsp;<span>
+		<font size="3">
+		<a th:href="${delete}">delete</a>
+		</font>
+		</span> </h1>
+		<p>Year: <span th:text="${year}">Year</span> | Genre: <span th:text="${genre}">Genre</span> | Director: <span th:text="${director}">Director</span> | Length: <span th:text="${length}">Length</span> minutes</p>
+		<br>
+		<h3>Movie description:</h3>
+		<p th:text="${desc}">Desc</p>
 
     </body>
 </html>
