@@ -69,7 +69,6 @@ public class Main {
             map.put("year", title.getYear());
             //map.put("genre", title.getGenre().getNimi());
             //map.put("director", title.getOhjaaja().getNimi());
-            System.out.println("tää on turha");
 
             return new ModelAndView(map, "title");
         }, new ThymeleafTemplateEngine());
