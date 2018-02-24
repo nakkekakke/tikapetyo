@@ -362,7 +362,7 @@ public class TitleDao implements Dao<Title, Integer> {
         stmt.setInt(4, title.getYear());
         stmt.setString(5, title.getDescription());
         stmt.setInt(6, title.getLength());
-        stmt.setInt(6, title.getId());
+        stmt.setInt(6, findOneWithName(title.getName()).getId());
         
         stmt.executeUpdate();
         
