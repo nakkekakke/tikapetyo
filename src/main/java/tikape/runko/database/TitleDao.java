@@ -209,14 +209,14 @@ public class TitleDao implements Dao<Title, Integer> {
     public void addTitle(Title title) throws SQLException {
 
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Title (director_id, genre_id, name, year, description, length)"
-                + "values ("
-                + title.getDirector().getId() + ", "
-                + title.getGenre().getId() + ", "
-                + title.getName() + ", "
-                + title.getYear() + ", "
-                + title.getDescription() + ", "
-                + title.getLength() + ");");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Title (director_id, genre_id, name, year, description, length) values (?, ?, ?, ?, ?, ?)");
+                
+        stmt.setInt(1, title.getDirector().getId());
+        stmt.setInt(2, title.getGenre().getId());
+        stmt.setString(3, title.getName());
+        stmt.setInt(4, title.getYear());
+        stmt.setString(5, title.getDescription());
+        stmt.setInt(6, title.getLength());
         
         stmt.execute();
         stmt.close();
