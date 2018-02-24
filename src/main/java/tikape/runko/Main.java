@@ -11,13 +11,12 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:imbd.db");
-        database.init();
 
         TitleDao titleDao = new TitleDao(database);
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
-            map.put("viesti", "tervehdys");
+            map.put("testi", "Tervehdys, cunts");
 
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
