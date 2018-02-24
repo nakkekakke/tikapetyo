@@ -106,7 +106,7 @@ public class PersonDao implements Dao<Person, Integer> {
     }
     
     public int defaultDirector() throws SQLException {  
-        return getAndAddUserId("Unknown director");        
+        return getAndAddPersonId("Unknown director");        
     }
     
     @Override
