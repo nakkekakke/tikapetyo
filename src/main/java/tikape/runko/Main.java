@@ -67,8 +67,8 @@ public class Main {
             Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
             map.put("name", title.getName());
             map.put("year", title.getYear());
-            //map.put("genre", title.getGenre().getNimi());
-            //map.put("director", title.getOhjaaja().getNimi());
+            map.put("genre", title.getGenre().getName());
+            map.put("director", title.getDirector().getName());
 
             return new ModelAndView(map, "title");
         }, new ThymeleafTemplateEngine());
