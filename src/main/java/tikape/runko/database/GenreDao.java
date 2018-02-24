@@ -79,7 +79,16 @@ public class GenreDao implements Dao<Genre, Integer> {
 
     @Override
     public void delete(Integer key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Genre WHERE Genre.id = " + key + ";");
+        if (!stmt.execute()) {
+            System.out.println("QUERY WAS NOT EXECUTED!");
+        }
+
+        stmt.close();
+        conn.close();
+        
     }
     
 }
