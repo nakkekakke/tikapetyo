@@ -86,10 +86,12 @@ public class PersonDao implements Dao<Person, Integer> {
 
     }
     
-    public int getAndAddUserId(Connection c, String user) throws SQLException {
+    public int getAndAddUserId(String user) throws SQLException {
 
-        String query = "Select Persohn.id from Person where Person.name = '" + user + "';";
+        String query = "Select Person.id from Person where Person.name = '" + user + "';";
 
+        Connection c = database.getConnection();
+        
         PreparedStatement s = c.prepareStatement(query);
         ResultSet results = s.executeQuery();
 
@@ -99,8 +101,12 @@ public class PersonDao implements Dao<Person, Integer> {
         } else {
             PreparedStatement userStmt = c.prepareStatement("INSERT INTO Person (name, bio) values ('" + user + "', 'Default bio');");
             userStmt.execute();
-            return getAndAddUserId(c, user);
+            return getAndAddUserId(user);
         }
+    }
+    
+    public int defaultDirector() throws SQLException {  
+        return getAndAddUserId("Unknown director");        
     }
     
     @Override

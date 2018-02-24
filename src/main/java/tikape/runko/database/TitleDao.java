@@ -17,19 +17,43 @@ import tikape.runko.domain.Title;
 public class TitleDao implements Dao<Title, Integer> {
 
     private GenreDao genreDao;
-    
+    private PersonDao personDao;
+
     private Database database;
 
     public TitleDao(Database database) {
         this.database = database;
-        
+        genreDao = new GenreDao(database);
+        personDao = new PersonDao(database);
     }
 
     @Override
     public Title findOne(Integer key) throws SQLException {
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE id = ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE Title.id = ?");
         stmt.setObject(1, key);
+        ResultSet rs = stmt.executeQuery();
+
+        if (!rs.next()) {
+            return null;
+        }
+
+        Title title = new Title(rs.getInt("id"),
+                rs.getString("name"),
+                rs.getInt("year"),
+                rs.getInt("length"),
+                rs.getString("description"));
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return title;
+    }
+
+    public Title findOneWithName(String name) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE id = " + name);
         ResultSet rs = stmt.executeQuery();
 
         if (!rs.next()) {
@@ -59,7 +83,7 @@ public class TitleDao implements Dao<Title, Integer> {
         List<Title> titles = new ArrayList<>();
 
         while (rs.next()) {
-            Title title = new Title(rs.getInt("id"),                 
+            Title title = new Title(rs.getInt("id"),
                     rs.getString("name"),
                     rs.getInt("year"),
                     rs.getInt("length"),
@@ -88,7 +112,25 @@ public class TitleDao implements Dao<Title, Integer> {
         conn.close();
 
     }
-      
+
+    public void addTitle(Title title) throws SQLException {
+
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Title (director_id, genre_id, name, year, description, length)"
+                + "values ("
+                + title.getDirector().getId() + ", "
+                + title.getGenre().getId() + ", "
+                + title.getName() + ", "
+                + title.getYear() + ", "
+                + title.getDescription() + ", "
+                + title.getLength() + ");");
+        
+        stmt.execute();
+        stmt.close();
+        conn.close();
+
+    }
+
     public Person findDirector(int title) throws SQLException {
 
         Connection conn = database.getConnection();
@@ -98,7 +140,7 @@ public class TitleDao implements Dao<Title, Integer> {
         ResultSet r = s.executeQuery();
 
         Person director = null;
-        
+
         if (r.next()) {
 
             director = new Person(r.getInt("id"), r.getString("name"));
@@ -109,10 +151,11 @@ public class TitleDao implements Dao<Title, Integer> {
         r.close();
         s.close();
         conn.close();
-        
+
         return director;
-        
+
     }
+
     public List<Person> findActors(int title) throws SQLException {
 
         ArrayList<Person> persons = new ArrayList<>();
@@ -140,6 +183,7 @@ public class TitleDao implements Dao<Title, Integer> {
         return persons;
 
     }
+
     public List<Person> findWriters(int title) throws SQLException {
 
         ArrayList<Person> persons = new ArrayList<>();
@@ -166,25 +210,26 @@ public class TitleDao implements Dao<Title, Integer> {
 
         return persons;
 
-    } 
+    }
+
     public List<Person> findPersons(int title) throws SQLException {
-        
+
         ArrayList<Person> persons = new ArrayList<>();
-        
+
         persons.add(findDirector(title));
-        
+
         for (Person p : findActors(title)) {
             persons.add(p);
         }
-        
+
         for (Person p : findWriters(title)) {
             persons.add(p);
         }
-        
+
         return persons;
-        
+
     }
-    
+
     @Override
     public Title saveOrUpdate(Title object) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet.");

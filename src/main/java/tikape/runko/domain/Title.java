@@ -26,11 +26,11 @@ public class Title {
         this.writers = new ArrayList<>();
     }
 
-    public int getPituus() {
+    public int getLength() {
         return length;
     }
 
-    public void setPituus(int kesto) {
+    public void setLength(int kesto) {
         this.length = kesto;
     }
 
@@ -42,27 +42,27 @@ public class Title {
         this.id = id;
     }
 
-    public String getNimi() {
+    public String getName() {
         return name;
     }
 
-    public void setNimi(String nimi) {
+    public void setName(String nimi) {
         this.name = nimi;
     }
 
-    public int getJulkaisuvuosi() {
+    public int getYear() {
         return year;
     }
 
-    public void setJulkaisuvuosi(int julkaisuvuosi) {
+    public void setYear(int julkaisuvuosi) {
         this.year = julkaisuvuosi;
     }
 
-    public List<Person> getNayttelijalista() {
+    public List<Person> getActors() {
         return actors;
     }
     
-    public List<Person> getKirjoittajalista() {
+    public List<Person> getWriters() {
         return writers;
     }
     
@@ -74,12 +74,16 @@ public class Title {
         this.genre = genre;
     }
     
-    public Person getOhjaaja() {
+    public Person getDirector() {
         return director;
     }
     
-    public void setOhjaaja(Person ohjaaja) {
+    public void setDirector(Person ohjaaja) {
         this.director = ohjaaja;
     }
 
+    public String getDescription() {
+        return description;
+    }
+    
 }
