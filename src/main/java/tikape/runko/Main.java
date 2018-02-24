@@ -11,7 +11,6 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:imbd.db");
-        database.init();
 
         TitleDao titleDao = new TitleDao(database);
 

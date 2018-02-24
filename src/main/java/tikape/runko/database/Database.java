@@ -1,8 +1,8 @@
 package tikape.runko.database;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.DriverManager;
 
 public class Database {
 

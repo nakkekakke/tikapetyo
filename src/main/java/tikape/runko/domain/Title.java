@@ -9,14 +9,17 @@ public class Title {
     private String nimi;
     private int julkaisuvuosi;
     private int kesto;
-    private List<Person> henkilolista;
+    private List<Person> nayttelijalista;
+    private List<Person> kirjoittajalista;
+    private Genre genre;
 
     public Title(int id, String nimi, int julkaisuvuosi, int kesto) {
         this.id = id;
         this.nimi = nimi;
         this.julkaisuvuosi = julkaisuvuosi;
         this.kesto = kesto;
-        this.henkilolista = new ArrayList<>();
+        this.nayttelijalista = new ArrayList<>();
+        this.kirjoittajalista = new ArrayList<>();
     }
 
     public int getPituus() {
@@ -51,8 +54,20 @@ public class Title {
         this.julkaisuvuosi = julkaisuvuosi;
     }
 
-    public List<Person> getHenkilolista() {
-        return henkilolista;
+    public List<Person> getNayttelijalista() {
+        return nayttelijalista;
+    }
+    
+    public List<Person> getKirjoittajalista() {
+        return kirjoittajalista;
+    }
+    
+    public Genre getGenre() {
+        return genre;
+    }
+    
+    public void setGenre(Genre genre) {
+        this.genre = genre;
     }
 
 }
