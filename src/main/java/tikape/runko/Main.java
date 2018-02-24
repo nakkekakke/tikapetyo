@@ -89,7 +89,17 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         
         post("/add", (req, res) -> {
-            //titleDao.saveOrUpdate(new Title(0, nimi, 0, 0, description));
+            Title title = new Title(
+                    1, 
+                    req.params("name"), 
+                    Integer.parseInt(req.params("year")), 
+                    Integer.parseInt(req.params("length")), 
+                    req.params("description"));
+            
+            titleDao.saveOrUpdate(title);
+            
+            System.out.println(req.params("name"));
+            
             res.redirect("/add");
             return"";
         });
