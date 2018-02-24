@@ -37,7 +37,7 @@ public class PersonDao implements Dao<Person, Integer> {
             return null;
         }
 
-        Person person = new Person(rs.getInt("id"), rs.getString("nimi"));
+        Person person = new Person(rs.getInt("id"), rs.getString("name"));
         person.setBio(rs.getString("bio"));
 
         rs.close();
@@ -59,7 +59,7 @@ public class PersonDao implements Dao<Person, Integer> {
 
         while (rs.next()) {
             Person title = new Person(rs.getInt("id"),
-                    rs.getString("nimi"));
+                    rs.getString("name"));
 
             persons.add(title);
         }
