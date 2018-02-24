@@ -92,6 +92,9 @@ public class TitleDao implements Dao<Title, Integer> {
                     rs.getInt("year"),
                     rs.getInt("length"),
                     rs.getString("description"));
+            
+            title.setDirector(personDao.findOne(rs.getInt("director_id")));
+            title.setGenre(genreDao.findOne(rs.getInt("genre_id")));
 
             titles.add(title);
         }
@@ -333,6 +336,34 @@ public class TitleDao implements Dao<Title, Integer> {
         
     }
     
+    public List<Title> searchTitlesByParameter(String parameter, String s) throws SQLException {
+        
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE Title." + parameter + " LIKE '%" + s + "%';");
+        ResultSet rs = stmt.executeQuery();
+
+        List<Title> titles = new ArrayList<>();
+
+        while (rs.next()) {
+            Title title = new Title(rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getInt("year"),
+                    rs.getInt("length"),
+                    rs.getString("description"));
+            
+            title.setDirector(personDao.findOne(rs.getInt("director_id")));
+            title.setGenre(genreDao.findOne(rs.getInt("genre_id")));
+
+            titles.add(title);
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return titles;
+        
+    }  
     
     @Override
     public Title saveOrUpdate(Title title) throws SQLException {
