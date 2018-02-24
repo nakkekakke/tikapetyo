@@ -35,10 +35,10 @@ public class Main {
             */
             
             List<Title> titles = titleDao.findAll();
-            if (titles.size() == 0) {
+            if (titles.isEmpty()) {
                 map.put("kohdeNimi", "Movie list empty.");
             } else {
-                int rnd = (int)(Math.random()*titles.size())+1;
+                int rnd = titles.get((int)(Math.random()*titles.size())).getId();
                 String kohde = "/titles/" + rnd;
                 map.put("kohde", kohde);
                 String kohdeNimi = titleDao.findOne(rnd).getName();
@@ -82,8 +82,10 @@ public class Main {
             Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
             
             titleDao.delete(Integer.parseInt(req.params("id")));
-
+            
+            res.redirect("/");
             return new ModelAndView(map, "sivu" + title.getId());
+            //new ModelAndView(map, "sivu" + title.getId());
         }, new ThymeleafTemplateEngine());
         
         post("/add", (req, res) -> {
