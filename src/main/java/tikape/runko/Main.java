@@ -69,11 +69,10 @@ public class Main {
         get("/titles/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
-            title.getDirector().setBio("lol");
             map.put("name", title.getName());
             map.put("year", title.getYear());
             map.put("genre", title.getGenre().getName());
-            map.put("director", title.getDirector().getBio());
+            map.put("director", title.getDirector().getName());
             map.put("length", title.getLength());
             map.put("desc", title.getDescription());
             map.put("delete", "/titles/" + title.getId() + "/delete");
