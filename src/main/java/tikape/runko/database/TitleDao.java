@@ -190,12 +190,15 @@ public class TitleDao implements Dao<Title, Integer> {
     
     @Override
     public void delete(Integer key) throws SQLException {
+        
+        if (findOne(key) == null) {
+            System.out.println("QUERY WAS NOT EXECUTED!");;
+        }
 
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM Title WHERE Title.id = " + key + ";");
-        if (!stmt.execute()) {
-            System.out.println("QUERY WAS NOT EXECUTED!");
-        }
+        
+        stmt.executeUpdate();
 
         stmt.close();
         conn.close();
