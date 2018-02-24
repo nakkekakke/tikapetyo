@@ -16,11 +16,11 @@ public class Genre {
         this.id = id;
     }
 
-    public String getNimi() {
+    public String getName() {
         return nimi;
     }
 
-    public void setNimi(String nimi) {
+    public void setName(String nimi) {
         this.nimi = nimi;
     }
     
