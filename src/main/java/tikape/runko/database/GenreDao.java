@@ -148,7 +148,7 @@ public class GenreDao implements Dao<Genre, Integer> {
         PreparedStatement stmt = conn.prepareStatement("UPDATE Genre SET name = ? WHERE id = ?)");
         
         stmt.setString(1, genre.getName());
-        stmt.setInt(2, genre.getId());
+        stmt.setInt(2, findOneWithName(genre.getName()).getId());
         
         stmt.executeUpdate();
         

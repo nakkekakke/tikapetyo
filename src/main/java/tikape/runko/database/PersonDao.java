@@ -170,10 +170,10 @@ public class PersonDao implements Dao<Person, Integer> {
     private Person update(Person person) throws SQLException {
         
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("UPDATE Person SET name = ? WHERE id = ?)");
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Person SET name = ? WHERE id = ?");
         
         stmt.setString(1, person.getName());
-        stmt.setInt(2, person.getId());
+        stmt.setInt(2, findOneWithName(person.getName()).getId());
         
         stmt.executeUpdate();
         
