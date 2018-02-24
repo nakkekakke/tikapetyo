@@ -3,6 +3,7 @@ package tikape.runko.domain;
 public class Person {
     private int id;
     private String nimi;
+    private String bio;
     
     public Person(int id, String nimi) {
         this.nimi = nimi;
@@ -22,6 +23,14 @@ public class Person {
 
     public void setNimi(String nimi) {
         this.nimi = nimi;
+    }
+    
+    public String getBio() {
+        return bio;
+    }
+    
+    public void setBio(String newBio) {
+        bio = newBio;
     }
     
 }
