@@ -83,7 +83,31 @@ public class TitleDao implements Dao<Title, Integer> {
         conn.close();
 
     }
-    
+      
+    public Person findDirector(int title) throws SQLException {
+
+        Connection conn = database.getConnection();
+        PreparedStatement s = conn.prepareStatement("SELECT * FROM Person WHERE Person.id = Title.id "
+                + "and Title.id = " + title + ";");
+
+        ResultSet r = s.executeQuery();
+
+        Person director = null;
+        
+        if (r.next()) {
+
+            director = new Person(r.getInt("id"), r.getString("name"));
+            director.setBio(r.getString("bio"));
+
+        }
+
+        r.close();
+        s.close();
+        conn.close();
+        
+        return director;
+        
+    }
     public List<Person> findActors(int title) throws SQLException {
 
         ArrayList<Person> persons = new ArrayList<>();
@@ -111,7 +135,6 @@ public class TitleDao implements Dao<Title, Integer> {
         return persons;
 
     }
-
     public List<Person> findWriters(int title) throws SQLException {
 
         ArrayList<Person> persons = new ArrayList<>();
@@ -138,33 +161,7 @@ public class TitleDao implements Dao<Title, Integer> {
 
         return persons;
 
-    }
-
-    public Person findDirector(int title) throws SQLException {
-
-        Connection conn = database.getConnection();
-        PreparedStatement s = conn.prepareStatement("SELECT * FROM Person WHERE Person.id = Title.id "
-                + "and Title.id = " + title + ";");
-
-        ResultSet r = s.executeQuery();
-
-        Person director = null;
-        
-        if (r.next()) {
-
-            director = new Person(r.getInt("id"), r.getString("name"));
-            director.setBio(r.getString("bio"));
-
-        }
-
-        r.close();
-        s.close();
-        conn.close();
-        
-        return director;
-        
-    }
-
+    } 
     public List<Person> findPersons(int title) throws SQLException {
         
         ArrayList<Person> persons = new ArrayList<>();
