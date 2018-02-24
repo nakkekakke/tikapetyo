@@ -8,7 +8,7 @@ public class Person {
     public Person(int id, String nimi) {
         this.id = id;
         this.nimi = nimi;
-        bio = "N/A";
+        bio = "This person does not have a bio yet.";
     }
 
     public int getId() {
