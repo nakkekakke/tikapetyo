@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tikape.runko.database;
 
 import java.sql.Connection;
@@ -192,8 +187,7 @@ public class TitleDao implements Dao<Title, Integer> {
 
         return titles;
     }
-
-    
+  
     @Override
     public void delete(Integer key) throws SQLException {
         
@@ -209,9 +203,7 @@ public class TitleDao implements Dao<Title, Integer> {
         stmt.close();
         conn.close();
 
-    }
-
-    
+    }   
 
     public Person findDirector(int title) throws SQLException {
 
@@ -405,8 +397,7 @@ public class TitleDao implements Dao<Title, Integer> {
         
         return title;
     }
-
-
+    
     private Title update(Title title) throws SQLException {
         
         Connection conn = database.getConnection();
