@@ -14,13 +14,17 @@
             <input type="text" name="name"/><br><br>
             Release year:<br>
             <input type="text" name="year"/><br><br>
-            Length in minutes:<br/>
+            Length in minutes:<br>
             <input type="text" name="length"/><br><br>
-            Director:<br/>
-            <input type="text" name="director"/><br><br>
-            Genre:<br/>
-            <input type="text" name="genre"/><br><br>
-            Description:<br/>
+            Director:<br>
+            <select name="directorDrop">
+				<span th:each="personChoice: ${people}"><option th:name="${personChoice.id}"><span th:text="${personChoice.name}">person</span></option></span>
+			</select><br><br>
+            Genre:<br>
+            <select name="genreDrop">
+				<span th:each="genreChoice: ${genres}"><option th:name="${genreChoice.id}"><span th:text="${genreChoice.name}">genre</span></option></span>
+			</select><br><br>
+            Description:<br>
             <input type="text" name ="description"/><br><br>
             <input type="submit" value="Add"/>
         </form>

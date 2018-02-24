@@ -58,6 +58,8 @@ public class Main {
         get("/add", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("titles", titleDao.findAll());
+            map.put("genres", genreDao.findAll());
+            map.put("people", personDao.findAll());
 
             return new ModelAndView(map, "lisayssivu");
         }, new ThymeleafTemplateEngine());
@@ -93,7 +95,11 @@ public class Main {
             map.put("bio", person.getBio());
             
             map.put("delete", "/people/" + person.getId() + "/delete");
-
+            
+            if (Integer.parseInt(req.params("id")) == 1) {
+                return new ModelAndView(map, "personUnknown");
+            }
+            
             return new ModelAndView(map, "person");
         }, new ThymeleafTemplateEngine());
         
@@ -145,7 +151,26 @@ public class Main {
             return new ModelAndView(map, "deleteError");
         }, new ThymeleafTemplateEngine());
         
+        get("/addError", (req, res) -> {
+            HashMap map = new HashMap<>();
+            
+            return new ModelAndView(map, "addError");
+        }, new ThymeleafTemplateEngine());
+        
         post("/addMovie", (req, res) -> {
+            
+            try {
+                int year = Integer.parseInt(req.queryParams("year"));
+            } catch (Exception e) {
+                res.redirect("/addError");
+                return"";
+            }
+            try {
+                int length = Integer.parseInt(req.queryParams("length"));
+            } catch (Exception e) {
+                res.redirect("/addError");
+                return"";
+            }
             
             Title title = new Title(
                     1, 
@@ -153,6 +178,8 @@ public class Main {
                     Integer.parseInt(req.queryParams("year")), 
                     Integer.parseInt(req.queryParams("length")), 
                     req.queryParams("description"));
+            title.setDirector(personDao.findOneWithName(req.queryParams("directorDrop")));
+            title.setGenre(genreDao.findOneWithName(req.queryParams("genreDrop")));
             
             titleDao.saveOrUpdate(title);
             
@@ -177,6 +204,18 @@ public class Main {
             genreDao.saveOrUpdate(genre);
             
             res.redirect("/add");
+            return"";
+        });
+        
+        post("/people/:id", (req, res) -> {
+            
+            Person person = personDao.findOne(Integer.parseInt(req.params("id")));
+            
+            person.setBio(req.queryParams("bio"));
+            
+            personDao.saveOrUpdate(person);
+            
+            res.redirect("/people/" + req.params("id"));
             return"";
         });
     }

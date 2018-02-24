@@ -4,6 +4,39 @@
     <head>
         <title th:text="${name}">name</title>
         <meta charset="utf-8" />
+		<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+/* Create two unequal columns that floats next to each other */
+.column {
+    float: left;
+    padding: 10px;
+    height: 300px; /* Should be removed. Only for demonstration */
+}
+
+.left {
+  width: 25%;
+}
+
+.right {
+  width: 75%;
+}
+
+/* Clear floats after the columns */
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+</style>
     </head>
 
     <body>
@@ -16,6 +49,21 @@
 		<br>
 		<h3>Movie description:</h3>
 		<p th:text="${desc}">Desc</p>
+		
+		<br><br>
+		
+		<div class="row">
+			<div class="column">
+				<h3>Writers:</h3>
+				<p><span th:each="writer: ${writers}"><span th:text="${writer.name}">name</span><br></span></p>
+			</div>
+			<div class="column">
+				<h3>Actors:</h3>
+				<p><span th:each="writer: ${writers}"><span th:text="${writer.name}">name</span><br></span></p>
+			</div>
+		</div>
+		
+		
 		
 		<br><br><br><br><br>
 		
