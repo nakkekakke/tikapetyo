@@ -81,7 +81,42 @@ public class Main {
             
             res.redirect("/");
             return null;
-            //new ModelAndView(map, "sivu" + title.getId());
+        }, new ThymeleafTemplateEngine());
+        
+        get("/people/:id", (req, res) -> {
+            HashMap map = new HashMap<>();
+            Person person = personDao.findOne(Integer.parseInt(req.params("id")));
+            map.put("name", person.getName());
+            map.put("bio", person.getBio());
+            
+            map.put("delete", "/people/" + person.getId() + "/delete");
+
+            return new ModelAndView(map, "person");
+        }, new ThymeleafTemplateEngine());
+        
+        get("/people/:id/delete", (req, res) -> {
+            
+            if (Integer.parseInt(req.params("id")) == 1) {
+                System.out.println("test");
+                res.redirect("/deleteError");
+            }
+            
+            HashMap map = new HashMap<>();
+            Person person = personDao.findOne(Integer.parseInt(req.params("id")));
+            
+            personDao.delete(Integer.parseInt(req.params("id")));
+            
+            res.redirect("/");
+            return null;
+        }, new ThymeleafTemplateEngine());
+        
+        get("/deleteError", (req, res) -> {
+            HashMap map = new HashMap<>();
+            Person person = personDao.findOne(Integer.parseInt(req.params("id")));
+            
+            personDao.delete(Integer.parseInt(req.params("id")));
+            
+            return new ModelAndView(map, "deleteError");
         }, new ThymeleafTemplateEngine());
         
         post("/addMovie", (req, res) -> {
