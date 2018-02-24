@@ -7,7 +7,9 @@ import spark.Spark;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.Database;
+import tikape.runko.database.PersonDao;
 import tikape.runko.database.TitleDao;
+import tikape.runko.domain.Person;
 import tikape.runko.domain.Title;
 
 public class Main {
@@ -99,26 +101,15 @@ public class Main {
             
             titleDao.saveOrUpdate(title);
             
-            String nimi = req.queryParams("name");
-            System.out.println(nimi);
-            
             res.redirect("/add");
             return"";
         });
         
         post("/addPerson", (req, res) -> {
-            /*
-            Title title = new Title(
-                    1, 
-                    req.params("name"), 
-                    Integer.parseInt(req.params("year")), 
-                    Integer.parseInt(req.params("length")), 
-                    req.params("description"));
-            */
-            //titleDao.saveOrUpdate(title);
             
-            String nimi = req.queryParams("name");
-            System.out.println(nimi);
+            Person person = new Person(2, req.queryParams("name"));
+            
+            
             
             res.redirect("/add");
             return"";
