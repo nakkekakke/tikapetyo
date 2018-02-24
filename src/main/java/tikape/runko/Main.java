@@ -51,13 +51,6 @@ public class Main {
             
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
-
-        get("/movie", (req, res) -> {
-            HashMap map = new HashMap<>();
-            map.put("titles", titleDao.findAll());
-
-            return new ModelAndView(map, "sivu2");
-        }, new ThymeleafTemplateEngine());
         
         get("/add", (req, res) -> {
             HashMap map = new HashMap<>();
