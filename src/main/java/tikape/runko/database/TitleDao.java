@@ -29,6 +29,7 @@ public class TitleDao implements Dao<Title, Integer> {
 
     @Override
     public Title findOne(Integer key) throws SQLException {
+        
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE Title.id = ?");
         stmt.setObject(1, key);
@@ -56,7 +57,8 @@ public class TitleDao implements Dao<Title, Integer> {
 
     public Title findOneWithName(String name) throws SQLException {
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE id = " + name);
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE name = ?");
+        stmt.setString(1, name);
         ResultSet rs = stmt.executeQuery();
 
         if (!rs.next()) {
@@ -310,7 +312,7 @@ public class TitleDao implements Dao<Title, Integer> {
 
     @Override
     public Title saveOrUpdate(Title title) throws SQLException {
-        if (findOne(title.getId()) == null) {
+        if (findOneWithName(title.getName()) == null) {
             return addTitle(title);
         }
         return update(title);
