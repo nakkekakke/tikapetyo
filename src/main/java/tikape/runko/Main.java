@@ -3,6 +3,7 @@ package tikape.runko;
 import java.util.HashMap;
 import java.util.List;
 import spark.ModelAndView;
+import spark.Spark;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.Database;
@@ -55,11 +56,11 @@ public class Main {
             return new ModelAndView(map, "sivu2");
         }, new ThymeleafTemplateEngine());
         
-        get("/search", (req, res) -> {
+        get("/add", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("titles", titleDao.findAll());
 
-            return new ModelAndView(map, "sivu1");
+            return new ModelAndView(map, "lisayssivu");
         }, new ThymeleafTemplateEngine());
 
         get("/titles/:id", (req, res) -> {
@@ -80,8 +81,15 @@ public class Main {
             HashMap map = new HashMap<>();
             Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
             
+            titleDao.delete(Integer.parseInt(req.params("id")));
 
             return new ModelAndView(map, "sivu" + title.getId());
         }, new ThymeleafTemplateEngine());
+        
+        post("/add", (req, res) -> {
+            //titleDao.saveOrUpdate(new Title(0, nimi, 0, 0, description));
+            res.redirect("/add");
+            return"";
+        });
     }
 }

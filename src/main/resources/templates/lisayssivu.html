@@ -2,30 +2,43 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
     <head>
-        <title>Lisäyssivu</title>
+        <title>Add to database</title>
         <meta charset="utf-8" />
     </head>
 
     <body>
-        <h1>Lisää elokuva</h1>
+        <h1>Add a Movie to Collection</h1>
         
         <form method="POST" action="">
-            Elokuvan nimi:<br/>
-            <input type="text" name="name"/><br/>
-            Elokuvan julkaisuvuosi:<br/>
-            <input type="text" name="year"/><br/>
-            Elokuvan kesto minuutteina:<br/>
-            <input type="text" name="length"/><br/>
-            Ohjaajan nimi:<br/>
-            <input type="text" name="director"/><br/>
+            Name:<br>
+            <input type="text" name="name"/><br><br>
+            Release date:<br>
+            <input type="text" name="year"/><br><br>
+            Length in minutes:<br/>
+            <input type="text" name="length"/><br><br>
+            Director:<br/>
+            <input type="text" name="director"/><br><br>
             Genre:<br/>
-            <input type="text" name="genre"/><br/>
-            Lyhyt kuvaus elokuvasta:<br/>
-            <input type="text" name ="description"/><br/>
-            <input type="submit" value="Lisää elokuva"/>
-        </form>    
+            <input type="text" name="genre"/><br><br>
+            Description:<br/>
+            <input type="text" name ="description"/><br><br>
+            <input type="submit" value="Add"/>
+        </form>
         
+		<br>
+		<br>
 
-        <h1>Lisää henkilö</h1>
+        <h1>Add Personnel</h1>
+		
+		<form method="POST" action="">
+            <p>Name:<br/>
+            <input type="text" name="name"/><br/>
+            </p>Bio:<br/>
+            <input type="text" name="bio"/><br/>
+			<br>
+            <input type="submit" value="Add"/>
+        </form>
+		
+		
     </body>
 </html>
