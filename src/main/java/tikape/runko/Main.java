@@ -24,6 +24,7 @@ public class Main {
             HashMap map = new HashMap<>();
             map.put("testi", "Tervehdys, cunts");
             map.put("feck", "THIS IS a kitten");
+            map.put("people", personDao.findAll());
             
             /*
             String kohde;
