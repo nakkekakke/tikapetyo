@@ -3,7 +3,6 @@ package tikape.runko;
 import java.util.HashMap;
 import java.util.List;
 import spark.ModelAndView;
-import spark.Spark;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.Database;
