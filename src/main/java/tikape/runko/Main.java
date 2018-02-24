@@ -84,7 +84,7 @@ public class Main {
             titleDao.delete(Integer.parseInt(req.params("id")));
             
             res.redirect("/");
-            return new ModelAndView(map, "sivu" + title.getId());
+            return null;
             //new ModelAndView(map, "sivu" + title.getId());
         }, new ThymeleafTemplateEngine());
         
