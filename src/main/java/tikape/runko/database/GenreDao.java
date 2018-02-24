@@ -47,6 +47,26 @@ public class GenreDao implements Dao<Genre, Integer> {
         
     }
 
+    public int getAndAddGenreId(String genre) throws SQLException {
+
+        String query = "Select Genre.id from Genre where Genre.name = '" + genre + "';";
+
+        Connection c = database.getConnection();
+        
+        PreparedStatement s = c.prepareStatement(query);
+        ResultSet results = s.executeQuery();
+
+        
+        if (results.next()) { 
+            return results.getInt("id");         
+        } else {
+            PreparedStatement userStmt = c.prepareStatement("INSERT INTO Genre (name) values ('" + genre + "');");
+            userStmt.execute();
+            return getAndAddGenreId(genre);
+        }
+    }
+    
+    
     @Override
     public List<Genre> findAll() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
