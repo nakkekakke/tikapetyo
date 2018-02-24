@@ -309,6 +309,31 @@ public class TitleDao implements Dao<Title, Integer> {
 
     }
 
+    public void addActor(int person, int title) throws SQLException {
+
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO ActorTitle (title_id, actor_id) values ("
+                + title + ", " + person + ");");
+        
+        stmt.execute();
+        stmt.close();
+        conn.close();
+        
+    }
+    
+    public void addWriter(int person, int title) throws SQLException {
+
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO WriterTitle (title_id, writer_id) values ("
+                + title + ", " + person + ");");
+        
+        stmt.execute();
+        stmt.close();
+        conn.close();
+        
+    }
+    
+    
     @Override
     public Title saveOrUpdate(Title title) throws SQLException {
         if (findOneWithName(title.getName()) == null) {
