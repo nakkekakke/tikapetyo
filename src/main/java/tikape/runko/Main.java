@@ -88,17 +88,37 @@ public class Main {
             //new ModelAndView(map, "sivu" + title.getId());
         }, new ThymeleafTemplateEngine());
         
-        post("/add", (req, res) -> {
+        post("/addMovie", (req, res) -> {
+            
+            Title title = new Title(
+                    1, 
+                    req.queryParams("name"), 
+                    Integer.parseInt(req.queryParams("year")), 
+                    Integer.parseInt(req.queryParams("length")), 
+                    req.queryParams("description"));
+            
+            titleDao.saveOrUpdate(title);
+            
+            String nimi = req.queryParams("name");
+            System.out.println(nimi);
+            
+            res.redirect("/add");
+            return"";
+        });
+        
+        post("/addPerson", (req, res) -> {
+            /*
             Title title = new Title(
                     1, 
                     req.params("name"), 
                     Integer.parseInt(req.params("year")), 
                     Integer.parseInt(req.params("length")), 
                     req.params("description"));
+            */
+            //titleDao.saveOrUpdate(title);
             
-            titleDao.saveOrUpdate(title);
-            
-            System.out.println(req.params("name"));
+            String nimi = req.queryParams("name");
+            System.out.println(nimi);
             
             res.redirect("/add");
             return"";
