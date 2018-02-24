@@ -55,7 +55,7 @@ public class Main {
             return new ModelAndView(map, "sivu2");
         }, new ThymeleafTemplateEngine());
         
-        get("/titles", (req, res) -> {
+        get("/search", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("titles", titleDao.findAll());
 
@@ -66,7 +66,10 @@ public class Main {
             HashMap map = new HashMap<>();
             Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
             map.put("name", title.getName());
-            map.put("title", title);
+            map.put("year", title.getYear());
+            //map.put("genre", title.getGenre().getNimi());
+            //map.put("director", title.getOhjaaja().getNimi());
+            System.out.println("tää on turha");
 
             return new ModelAndView(map, "title");
         }, new ThymeleafTemplateEngine());
