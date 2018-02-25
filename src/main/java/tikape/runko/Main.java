@@ -217,6 +217,15 @@ public class Main {
             return"";
         });
         
+        post("/addIMDB", (req, res) -> {
+            
+            String link = req.queryParams("link");
+            imdb.addTitleFromIMDB(link);
+            
+            res.redirect("/add");
+            return"";
+        });
+        
         post("/addGenre", (req, res) -> {
             
             Genre genre = new Genre(2, req.queryParams("name"));
