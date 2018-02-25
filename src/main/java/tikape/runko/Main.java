@@ -75,9 +75,12 @@ public class Main {
             map.put("desc", title.getDescription());
             map.put("delete", "/titles/" + title.getId() + "/delete");
             
-            map.put("people", personDao.findAll());
+            map.put("people", personDao.findAllButDefault());
             map.put("actors", titleDao.findActors(title.getId()));
             map.put("writers", titleDao.findWriters(title.getId()));
+            
+            map.put("addActor", "/addActor/" + title.getId());
+            map.put("addWriter", "/addWriter/" + title.getId());
 
             return new ModelAndView(map, "title");
         }, new ThymeleafTemplateEngine());
@@ -211,11 +214,17 @@ public class Main {
             return"";
         });
         
-        post("/addActor", (req, res) -> {
-            System.out.println(personDao.findOneWithName(req.queryParams("actorDrop")).getId());
-            titleDao.addActor(5, personDao.findOneWithName(req.queryParams("actorDrop")).getId());
+        post("/addActor/:id", (req, res) -> {
+            titleDao.addActor(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("actorDrop")).getId());
             
-            res.redirect("/titles/" + 5);
+            res.redirect("/titles/" + req.params("id"));
+            return"";
+        });
+        
+        post("/addWriter/:id", (req, res) -> {
+            titleDao.addWriter(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("writerDrop")).getId());
+            
+            res.redirect("/titles/" + req.params("id"));
             return"";
         });
         

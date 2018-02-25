@@ -82,6 +82,29 @@ public class PersonDao implements Dao<Person, Integer> {
         return persons;
         
     }
+    
+    public List<Person> findAllButDefault() throws SQLException {
+        
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person WHERE id > 1");
+        ResultSet rs = stmt.executeQuery();
+
+        List<Person> persons = new ArrayList<>();
+
+        while (rs.next()) {
+            Person title = new Person(rs.getInt("id"),
+                    rs.getString("name"));
+
+            persons.add(title);
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return persons;
+        
+    }
 
     @Override
     public void delete(Integer key) throws SQLException {
