@@ -185,6 +185,30 @@ public class IMDBReader {
                 continue;
             }
 
+            //Movie stars
+            if (line.contains("<b>Stars:</b> ")) {
+                
+                while (reader.hasNextLine()) {
+                    
+                    line = reader.nextLine();
+                    
+                    if (line.contains("</span></div>")) {
+                        
+                        String[] split = line.split("</span></div>");
+                        actors.add(split[0]);
+                        break;
+                        
+                    } else {
+                        
+                        String[] split = line.split(",");
+                        actors.add(split[0]);
+                        
+                    }
+                    
+                }
+                
+            }
+            
             //Movie length in minutes
             if (line.contains("itemprop=\"duration\"")) {
 

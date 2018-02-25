@@ -32,11 +32,14 @@ public class Database {
         TitleDao t = new TitleDao(this);
         PersonDao p = new PersonDao(this);
         
+        Connection c = getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
         
         //Drop all tables
         System.out.println("Dropping table: ActorTitle");
-        Connection c = getConnection();
-        PreparedStatement stmt = c.prepareStatement("DROP TABLE ActorTitle");
+        stmt = c.prepareStatement("DROP TABLE ActorTitle");
         stmt.execute();
         stmt.close();
 
@@ -60,7 +63,8 @@ public class Database {
         stmt.execute();
         stmt.close();
         
-        
+                } catch (Exception e) {
+        }
 
         //Create new tables
         System.out.println("Creating table: ActorTitle");
