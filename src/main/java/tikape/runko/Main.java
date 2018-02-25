@@ -28,6 +28,7 @@ public class Main {
         PersonDao personDao = new PersonDao(database);
         GenreDao genreDao = new GenreDao(database);
         
+        // Reset tool
         get("/resetDatabase", (req, res) -> {
             
             database.resetDatabase(false);
@@ -44,12 +45,12 @@ public class Main {
             return null;
         }, new ThymeleafTemplateEngine());
 
+        
+        // Main page
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
-            map.put("testi", "Tervehdys, cunts");
-            map.put("feck", "THIS IS a kitten");
-            map.put("people", personDao.findAll());
             
+            // Featured movie
             List<Title> titles = titleDao.findAll();
             if (titles.isEmpty()) {
                 map.put("kohdeNimi", "Movie list empty.");
@@ -66,6 +67,7 @@ public class Main {
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
         
+        // Add stuff to Database
         get("/add", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("titles", titleDao.findAll());
@@ -75,11 +77,13 @@ public class Main {
             return new ModelAndView(map, "lisayssivu");
         }, new ThymeleafTemplateEngine());
 
+        
+        // Movie page
         get("/titles/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
-            map.put("name", title.getName());
-            map.put("year", title.getYear());
+            
+            // Check genre validity
             try {
                 map.put("genre", title.getGenre().getName());
             } catch (Exception e) {
@@ -87,6 +91,8 @@ public class Main {
                 titleDao.defaultGenre(title.getId());
                 System.out.println("GENRE NOT FOUND");
             }
+            
+            // Check director validity
             try {
                 map.put("director", title.getDirector().getName());
             } catch (Exception e) {
@@ -94,6 +100,10 @@ public class Main {
                 titleDao.defaultDirector(title.getId());
                 System.out.println("DIRECTOR NOT FOUND");
             }
+            
+            // Other variables
+            map.put("name", title.getName());
+            map.put("year", title.getYear());
             map.put("length", title.getLength());
             map.put("desc", title.getDescription());
             map.put("delete", "/titles/" + title.getId() + "/delete");
@@ -103,11 +113,12 @@ public class Main {
             map.put("writers", titleDao.findWriters(title.getId()));
             
             map.put("control", "/controlStaff/" + title.getId());
-            map.put("addWriter", "/addWriter/" + title.getId());
-
+            
+            
             return new ModelAndView(map, "title");
         }, new ThymeleafTemplateEngine());
         
+        // Delete movie
         get("/titles/:id/delete", (req, res) -> {
             
             titleDao.delete(Integer.parseInt(req.params("id")));
@@ -117,15 +128,18 @@ public class Main {
             return null;
         }, new ThymeleafTemplateEngine());
         
+        
+        // Person page
         get("/people/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             Person person = personDao.findOne(Integer.parseInt(req.params("id")));
+            
             map.put("name", person.getName());
             map.put("bio", person.getBio());
             map.put("movies", titleDao.findTitlesWithPerson(person.getId()));
-            
             map.put("delete", "/people/" + person.getId() + "/delete");
             
+            // Default person page
             if (Integer.parseInt(req.params("id")) == 1) {
                 return new ModelAndView(map, "personUnknown");
             }
@@ -133,8 +147,10 @@ public class Main {
             return new ModelAndView(map, "person");
         }, new ThymeleafTemplateEngine());
         
+        // Delete person
         get("/people/:id/delete", (req, res) -> {
             
+            // Default person cannot be deleted
             if (Integer.parseInt(req.params("id")) == 1) {
                 res.redirect("/deleteError");
                 return null;
@@ -147,18 +163,27 @@ public class Main {
             return null;
         }, new ThymeleafTemplateEngine());
         
+        
+        // Genre page
         get("/genre/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             Genre genre = genreDao.findOne(Integer.parseInt(req.params("id")));
-            map.put("name", genre.getName());
             
+            map.put("name", genre.getName());
             map.put("delete", "/genre/" + genre.getId() + "/delete");
+            
+            // Default genre page
+            if (Integer.parseInt(req.params("id")) == 1) {
+                return new ModelAndView(map, "genreUnknown");
+            }
 
             return new ModelAndView(map, "genre");
         }, new ThymeleafTemplateEngine());
         
+        // Delete genre
         get("/genre/:id/delete", (req, res) -> {
             
+            // Default genre cannot be deleted
             if (Integer.parseInt(req.params("id")) == 1) {
                 res.redirect("/deleteError");
                 return null;
@@ -170,16 +195,11 @@ public class Main {
             return null;
         }, new ThymeleafTemplateEngine());
         
-        get("/deleteError", (req, res) -> {
-            return new ModelAndView(new HashMap<>(), "deleteError");
-        }, new ThymeleafTemplateEngine());
         
-        get("/addError", (req, res) -> {
-            return new ModelAndView(new HashMap<>(), "addError");
-        }, new ThymeleafTemplateEngine());
-        
+        // Add movie - command
         post("/addMovie", (req, res) -> {
             
+            // Makes sure inputted values are valid
             try {
                 int year = Integer.parseInt(req.queryParams("year"));
             } catch (Exception e) {
@@ -208,6 +228,16 @@ public class Main {
             return"";
         });
         
+        // Add information from IMBD site
+        post("/addIMDB", (req, res) -> {
+            
+            imdb.addTitleFromIMDB(req.queryParams("link"));
+            
+            res.redirect("/add");
+            return"";
+        });
+        
+        // Add person - command
         post("/addPerson", (req, res) -> {
             
             Person person = new Person(2, req.queryParams("name"));
@@ -218,14 +248,7 @@ public class Main {
             return"";
         });
         
-        post("/addIMDB", (req, res) -> {
-            
-            imdb.addTitleFromIMDB(req.queryParams("link"));
-            
-            res.redirect("/add");
-            return"";
-        });
-        
+        // Add genre - command
         post("/addGenre", (req, res) -> {
             
             Genre genre = new Genre(2, req.queryParams("name"));
@@ -236,8 +259,10 @@ public class Main {
             return"";
         });
         
+        // Add/remove actors and writers
         post("/controlStaff/:id", (req, res) -> {
             
+            // Choose action based on which button was pressed
             if (req.queryParams("button").equals("Add actor")) {
                 titleDao.addActor(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
             } else if (req.queryParams("button").equals("Remove actor")) {
@@ -252,6 +277,8 @@ public class Main {
             return"";
         });
         
+        
+        // Edit person biograph
         post("/people/:id", (req, res) -> {
             
             Person person = personDao.findOne(Integer.parseInt(req.params("id")));
@@ -263,5 +290,15 @@ public class Main {
             res.redirect("/people/" + req.params("id"));
             return"";
         });
+        
+        
+        // Errors
+        get("/deleteError", (req, res) -> {
+            return new ModelAndView(new HashMap<>(), "deleteError");
+        }, new ThymeleafTemplateEngine());
+        
+        get("/addError", (req, res) -> {
+            return new ModelAndView(new HashMap<>(), "addError");
+        }, new ThymeleafTemplateEngine());
     }
 }
