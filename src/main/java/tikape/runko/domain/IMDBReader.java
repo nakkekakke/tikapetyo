@@ -42,6 +42,7 @@ public class IMDBReader {
 
         boolean genreFound = false;
         boolean minutesFound = false;
+        boolean foundActors = false;
 
         //Parsing HTML file
         while (reader.hasNextLine()) {
@@ -188,6 +189,10 @@ public class IMDBReader {
             //Movie stars
             if (line.contains("<b>Stars:</b> ")) {
                 
+                if (foundActors) {
+                    continue;
+                }
+                
                 while (reader.hasNextLine()) {
                     
                     line = reader.nextLine();
@@ -206,6 +211,8 @@ public class IMDBReader {
                     }
                     
                 }
+                
+                foundActors = true;
                 
             }
             

@@ -18,8 +18,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:imbd.db");
-        database.resetDatabase(false);
-        
+
         IMDBReader imdb = new IMDBReader(database);
         
         TitleDao titleDao = new TitleDao(database);
@@ -143,9 +142,10 @@ public class Main {
             
             // Default person page
             if (Integer.parseInt(req.params("id")) == 1) {
+                System.out.println("Giving unknown page");
                 return new ModelAndView(map, "personUnknown");
             }
-            
+            System.out.println("Giving normal page");
             return new ModelAndView(map, "person");
         }, new ThymeleafTemplateEngine());
         
