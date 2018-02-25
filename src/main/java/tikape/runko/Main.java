@@ -24,24 +24,21 @@ public class Main {
         TitleDao titleDao = new TitleDao(database);
         PersonDao personDao = new PersonDao(database);
         GenreDao genreDao = new GenreDao(database);
+        
+        get("/resetDatabase", (req, res) -> {
+            HashMap map = new HashMap<>();
+            
+            database.resetDatabase();
+            
+            res.redirect("/");
+            return null;
+        }, new ThymeleafTemplateEngine());
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("testi", "Tervehdys, cunts");
             map.put("feck", "THIS IS a kitten");
             map.put("people", personDao.findAll());
-            
-            /*
-            String kohde;
-            int rnd = (int)(Math.random()*2);
-            if (rnd == 0) {
-                kohde = "elokuva1";
-            } else {
-                kohde = "elokuva2";
-            }
-            
-            map.put("kohde", kohde);
-            */
             
             List<Title> titles = titleDao.findAll();
             if (titles.isEmpty()) {
