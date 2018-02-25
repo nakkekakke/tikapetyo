@@ -101,7 +101,7 @@ public class TitleDao implements Dao<Title, Integer> {
         return titles;
     }
 
-    public List<Title> findTitlesWithPerson(int person_id) throws SQLException {
+    public List<Title> findTitlesWithPersonOld(int person_id) throws SQLException {
 
         
         //Actor
@@ -186,6 +186,77 @@ public class TitleDao implements Dao<Title, Integer> {
         conn.close();
 
         return titles;
+    }
+    
+    public List<Title> findTitlesWithPerson(int person_id) throws SQLException {
+        List<Title> list = new ArrayList<>();
+        
+        Connection conn = database.getConnection();
+        
+        
+        // Actor
+        PreparedStatement stmt2 = conn.prepareStatement("SELECT title_id FROM ActorTitle WHERE ActorTitle.actor_id = ?");
+        stmt2.setInt(1, person_id);
+        
+        ResultSet rs2 = stmt2.executeQuery();
+        
+        while (rs2.next()) {
+            list.add(findOne(rs2.getInt("title_id")));
+        }
+        
+        rs2.close();
+        stmt2.close();
+        
+        
+        // Director
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE Title.director_id = ?");
+        stmt.setInt(1, person_id);
+        
+        ResultSet rs = stmt.executeQuery();
+        
+        BASE:while (rs.next()) {
+            Title title = new Title(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getInt("year"),
+                rs.getInt("length"),
+                rs.getString("description"));
+            
+            for(int i = 0; i < list.size(); i++) {
+                if (list.get(i).getName().equals(title.getName())) {
+                    continue BASE;
+                }
+            }
+            
+            list.add(title);
+        }
+        rs.close();
+        stmt.close();
+        
+        
+        // Director
+        PreparedStatement stmt3 = conn.prepareStatement("SELECT title_id FROM WriterTitle WHERE WriterTitle.writer_id = ?");
+        stmt3.setInt(1, person_id);
+        
+        ResultSet rs3 = stmt3.executeQuery();
+        
+        BASE2:while (rs3.next()) {
+            Title title = findOne(rs3.getInt("title_id"));
+            
+            for(int i = 0; i < list.size(); i++) {
+                if (list.get(i).getName().equals(title.getName())) {
+                    continue BASE2;
+                }
+            }
+            
+            list.add(title);
+        }
+        rs3.close();
+        stmt3.close();
+        
+        conn.close();
+        
+        return list;
     }
   
     @Override
@@ -333,6 +404,19 @@ public class TitleDao implements Dao<Title, Integer> {
         
     }
     
+    public void removeWriter(Integer title_id, Integer writer_id) throws SQLException {
+        Connection conn = database.getConnection();
+        
+        PreparedStatement statement = conn.prepareStatement(
+                "DELETE FROM WriterTitle WHERE title_id = " + title_id + " AND writer_id = " + writer_id);
+        
+        try{
+            statement.executeUpdate();
+        } catch (SQLException e) {}
+        statement.close();
+        conn.close();
+    }
+    
     public void addActor(Integer title_id, Integer actor_id) throws SQLException {
         Connection conn = database.getConnection();
         
@@ -359,7 +443,61 @@ public class TitleDao implements Dao<Title, Integer> {
         rs.close();
         statement.close();
         conn.close();
+    }
+    
+    public void removeActor(Integer title_id, Integer actor_id) throws SQLException {
+        Connection conn = database.getConnection();
         
+        PreparedStatement statement = conn.prepareStatement(
+                "DELETE FROM ActorTitle WHERE title_id = " + title_id + " AND actor_id = " + actor_id);
+        
+        try{
+            statement.executeUpdate();
+        } catch (SQLException e) {}
+        statement.close();
+        conn.close();
+    }
+    
+    public void removeStaff(Integer title_id) throws SQLException {
+        Connection conn = database.getConnection();
+        
+        PreparedStatement statement = conn.prepareStatement(
+                "DELETE FROM ActorTitle WHERE title_id = " + title_id);
+        
+        try{
+            statement.executeUpdate();
+        } catch (SQLException e) {}
+        statement.close();
+        
+        PreparedStatement statement2 = conn.prepareStatement(
+                "DELETE FROM WriterTitle WHERE title_id = " + title_id);
+        
+        try{
+            statement2.executeUpdate();
+        } catch (SQLException e) {}
+        statement2.close();
+        conn.close();
+    }
+    
+    public void removePersonTitle(Integer person_id) throws SQLException {
+        Connection conn = database.getConnection();
+        
+        PreparedStatement statement = conn.prepareStatement(
+                "DELETE FROM ActorTitle WHERE actor_id = " + person_id);
+        
+        try{
+            statement.executeUpdate();
+        } catch (SQLException e) {}
+        statement.close();
+        
+        PreparedStatement statement2 = conn.prepareStatement(
+                "DELETE FROM WriterTitle WHERE writer_id = " + person_id);
+        
+        try{
+            statement2.executeUpdate();
+        } catch (SQLException e) {}
+        statement2.close();
+        conn.close();
     }
     
     public List<Title> searchTitlesByParameter(String parameter, String s) throws SQLException {
@@ -453,6 +591,22 @@ public class TitleDao implements Dao<Title, Integer> {
         
         return title;
         
+    }
+    
+    public void defaultGenre(Integer id) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Title SET genre_id = 1 WHERE id = " + id);
+        stmt.executeUpdate();
+        stmt.close();
+        conn.close();
+    }
+    
+    public void defaultDirector(Integer id) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Title SET director_id = 1 WHERE id = " + id);
+        stmt.executeUpdate();
+        stmt.close();
+        conn.close();
     }
 
 }

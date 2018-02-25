@@ -195,7 +195,7 @@ public class GenreDao implements Dao<Genre, Integer> {
         }
 
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Title WHERE Title.id = " + key);
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Genre WHERE Genre.id = " + key);
         
         stmt.executeUpdate();
 

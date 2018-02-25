@@ -18,7 +18,6 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:imbd.db");
-        //database.resetDatabase();
         
         IMDBReader imdb = new IMDBReader(database);
         
@@ -30,7 +29,6 @@ public class Main {
         GenreDao genreDao = new GenreDao(database);
         
         get("/resetDatabase", (req, res) -> {
-            HashMap map = new HashMap<>();
             
             database.resetDatabase(false);
             
@@ -39,7 +37,6 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         
         get("/resetDatabase/hard", (req, res) -> {
-            HashMap map = new HashMap<>();
             
             database.resetDatabase(true);
             
@@ -56,6 +53,7 @@ public class Main {
             List<Title> titles = titleDao.findAll();
             if (titles.isEmpty()) {
                 map.put("kohdeNimi", "Movie list empty.");
+                map.put("kohde", "/");
             } else {
                 int rnd = titles.get((int)(Math.random()*titles.size())).getId();
                 String kohde = "/titles/" + rnd;
@@ -82,8 +80,20 @@ public class Main {
             Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
             map.put("name", title.getName());
             map.put("year", title.getYear());
-            map.put("genre", title.getGenre().getName());
-            map.put("director", title.getDirector().getName());
+            try {
+                map.put("genre", title.getGenre().getName());
+            } catch (Exception e) {
+                map.put("genre", "Unknown");
+                titleDao.defaultGenre(title.getId());
+                System.out.println("GENRE NOT FOUND");
+            }
+            try {
+                map.put("director", title.getDirector().getName());
+            } catch (Exception e) {
+                map.put("director", "Unknown");
+                titleDao.defaultDirector(title.getId());
+                System.out.println("DIRECTOR NOT FOUND");
+            }
             map.put("length", title.getLength());
             map.put("desc", title.getDescription());
             map.put("delete", "/titles/" + title.getId() + "/delete");
@@ -92,7 +102,7 @@ public class Main {
             map.put("actors", titleDao.findActors(title.getId()));
             map.put("writers", titleDao.findWriters(title.getId()));
             
-            map.put("addActor", "/addActor/" + title.getId());
+            map.put("control", "/controlStaff/" + title.getId());
             map.put("addWriter", "/addWriter/" + title.getId());
 
             return new ModelAndView(map, "title");
@@ -100,9 +110,9 @@ public class Main {
         
         get("/titles/:id/delete", (req, res) -> {
             HashMap map = new HashMap<>();
-            Title title = titleDao.findOne(Integer.parseInt(req.params("id")));
             
             titleDao.delete(Integer.parseInt(req.params("id")));
+            titleDao.removeStaff(Integer.parseInt(req.params("id")));
             
             res.redirect("/");
             return null;
@@ -113,6 +123,7 @@ public class Main {
             Person person = personDao.findOne(Integer.parseInt(req.params("id")));
             map.put("name", person.getName());
             map.put("bio", person.getBio());
+            map.put("movies", titleDao.findTitlesWithPerson(person.getId()));
             
             map.put("delete", "/people/" + person.getId() + "/delete");
             
@@ -130,10 +141,8 @@ public class Main {
                 return null;
             }
             
-            HashMap map = new HashMap<>();
-            Person person = personDao.findOne(Integer.parseInt(req.params("id")));
-            
             personDao.delete(Integer.parseInt(req.params("id")));
+            titleDao.removePersonTitle(Integer.parseInt(req.params("id")));
             
             res.redirect("/");
             return null;
@@ -156,9 +165,6 @@ public class Main {
                 return null;
             }
             
-            HashMap map = new HashMap<>();
-            Genre genre = genreDao.findOne(Integer.parseInt(req.params("id")));
-            
             genreDao.delete(Integer.parseInt(req.params("id")));
             
             res.redirect("/");
@@ -166,15 +172,11 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         
         get("/deleteError", (req, res) -> {
-            HashMap map = new HashMap<>();
-            
-            return new ModelAndView(map, "deleteError");
+            return new ModelAndView(new HashMap<>(), "deleteError");
         }, new ThymeleafTemplateEngine());
         
         get("/addError", (req, res) -> {
-            HashMap map = new HashMap<>();
-            
-            return new ModelAndView(map, "addError");
+            return new ModelAndView(new HashMap<>(), "addError");
         }, new ThymeleafTemplateEngine());
         
         post("/addMovie", (req, res) -> {
@@ -219,8 +221,7 @@ public class Main {
         
         post("/addIMDB", (req, res) -> {
             
-            String link = req.queryParams("link");
-            imdb.addTitleFromIMDB(link);
+            imdb.addTitleFromIMDB(req.queryParams("link"));
             
             res.redirect("/add");
             return"";
@@ -236,15 +237,17 @@ public class Main {
             return"";
         });
         
-        post("/addActor/:id", (req, res) -> {
-            titleDao.addActor(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("actorDrop")).getId());
+        post("/controlStaff/:id", (req, res) -> {
             
-            res.redirect("/titles/" + req.params("id"));
-            return"";
-        });
-        
-        post("/addWriter/:id", (req, res) -> {
-            titleDao.addWriter(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("writerDrop")).getId());
+            if (req.queryParams("button").equals("Add actor")) {
+                titleDao.addActor(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
+            } else if (req.queryParams("button").equals("Remove actor")) {
+                titleDao.removeActor(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
+            } else if (req.queryParams("button").equals("Add writer")) {
+                titleDao.addWriter(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
+            } else {
+                titleDao.removeWriter(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
+            }
             
             res.redirect("/titles/" + req.params("id"));
             return"";

@@ -4,6 +4,46 @@
     <head>
         <title th:text="${name}">name</title>
         <meta charset="utf-8" />
+		<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 10;
+		}
+
+		/* Create two unequal columns that floats next to each other */
+		
+		.column {
+			float: left;
+			width: 600px;
+		}
+		
+		p {
+			white-space:normal;
+		}
+		
+
+		.left {
+			width: 500px;
+			float: left;
+		}
+
+		.right {
+			max-width: 500px;
+			float: left;
+		}
+
+		/* Clear floats after the columns */
+
+		.row:after {
+			content: "";
+			display: table;
+			clear: both;
+		}
+
+		</style>
     </head>
 
     <body>
@@ -12,20 +52,33 @@
 		<a th:href="${delete}">delete</a>
 		</font>
 		</span> </h1>
-		<br>
-		<h3>Personal Bio:</h3>
-		<p th:text="${bio}">Bio</p>
+		<div class="row">
+			<div class="column">
+				<div class="left">
+					<h3>Personal Bio:</h3>
+					<p th:text="${bio}">Bio</p>
+					
+					<br>
+					
+					<form method="POST" action="">
+						<p>Edit bio:<br/>
+						<input type="text" name="bio" style="height:30px;width:500px"/><br/>
+						<br>
+						<input type="submit" value="Accept"/>
+					</form>
+				</div>
+				<div class="left">
+					&emsp;
+				</div>
+			</div>
+			
+			<div class="right">
+				<h3>Appeared in the following movies:</h3>
+				<p><span th:each="movie: ${movies}"><span th:text="${movie.name}">movie</span><br><br></span></p>
+			</div>
+		</div>
 		
-		<br>
-		
-		<form method="POST" action="">
-            <p>Edit bio:<br/>
-            <input type="text" name="bio"/><br/>
-			<br>
-            <input type="submit" value="Accept"/>
-        </form>
-		
-		<br><br><br><br>
+		<br><br><br>
 		
 		<a href="/">Home</a>
 
