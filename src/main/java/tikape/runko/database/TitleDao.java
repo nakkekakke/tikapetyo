@@ -362,29 +362,11 @@ public class TitleDao implements Dao<Title, Integer> {
         
     }
     
-    public List<Person> findActorByTitle(Integer title_id) throws SQLException {
-        Connection conn = database.getConnection();
-        
-        PreparedStatement statement = conn.prepareStatement(
-                "SELECT (actor_id) FROM ActorTitle WHERE title_id = ?");
-        
-        statement.setInt(1, title_id);
-        
-        ResultSet rs = statement.executeQuery();
-        
-        List<Person> list = new ArrayList<>();
-        
-        while (rs.next()) {
-            list.add(personDao.findOne(rs.getInt("title_id")));
-        }
-        
-        return list;
-    }
-    
     public List<Title> searchTitlesByParameter(String parameter, String s) throws SQLException {
         
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE Title." + parameter + " LIKE '%" + s + "%'");
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM Title WHERE Title." + parameter + " LIKE '%" + s + "%'");
         ResultSet rs = stmt.executeQuery();
 
         List<Title> titles = new ArrayList<>();
