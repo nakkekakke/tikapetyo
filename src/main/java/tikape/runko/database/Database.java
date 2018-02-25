@@ -11,14 +11,17 @@ public class Database {
 
     private String databaseAddress;
 
+    
     public Database(String databaseAddress) throws ClassNotFoundException {
         this.databaseAddress = databaseAddress;
     }
 
+    
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(databaseAddress);
     }
 
+    
     public void resetDatabase(boolean leaveEmpty) throws SQLException, IOException {
 
         System.out.println("--------------------------------------------------------------");
@@ -28,7 +31,8 @@ public class Database {
         GenreDao g = new GenreDao(this);
         TitleDao t = new TitleDao(this);
         PersonDao p = new PersonDao(this);
-
+        
+        
         //Drop all tables
         System.out.println("Dropping table: ActorTitle");
         Connection c = getConnection();
@@ -55,8 +59,10 @@ public class Database {
         stmt = c.prepareStatement("DROP TABLE WriterTitle");
         stmt.execute();
         stmt.close();
+        
+        
 
-        //Create Tables again
+        //Create new tables
         System.out.println("Creating table: ActorTitle");
         stmt = c.prepareStatement("CREATE TABLE ActorTitle (title_id integer, actor_id integer, FOREIGN KEY (title_id) REFERENCES Title(id), FOREIGN KEY (actor_id) REFERENCES Person(id));");
         stmt.execute();
@@ -81,11 +87,14 @@ public class Database {
         stmt = c.prepareStatement("CREATE TABLE WriterTitle (title_id integer, writer_id integer, FOREIGN KEY (title_id) REFERENCES Title(id), FOREIGN KEY (writer_id) REFERENCES Person(id));");
         stmt.execute();
         stmt.close();
+        
 
         System.out.println("");
 
         System.out.println("Adding default rows: ");
+        
 
+        // Insert defaults
         stmt = c.prepareStatement("INSERT INTO Person (id,name,bio) VALUES (1,'Unknown','This person is not known.');");
         stmt.execute();
         stmt.close();
@@ -93,7 +102,7 @@ public class Database {
         stmt = c.prepareStatement("INSERT INTO Genre (id,name) VALUES (1,'Unknown');");
         stmt.execute();
         stmt.close();
-
+        
         if (leaveEmpty) {
             System.out.println("Leaving database empty.");
             System.out.println("Database successfully reset");
@@ -101,6 +110,7 @@ public class Database {
             return;
         }
         
+        // Soft reset information fill
         System.out.println("");
         System.out.println("Adding template information to database:");
 
@@ -116,6 +126,7 @@ public class Database {
         System.out.println("Adding movies: ");
         System.out.println("");
 
+        // Adding default movies from IMBD
         System.out.println("Adding 'Pulp Fiction'");
         imdb.addTitleFromIMDB("http://www.imdb.com/title/tt0110912/?ref_=nv_sr_1");
         System.out.println("Adding 'Dark Knight'");
@@ -129,6 +140,5 @@ public class Database {
 
         System.out.println("Database successfully reset");
         System.out.println("---------------------------------------------------------------");
-
     }
 }

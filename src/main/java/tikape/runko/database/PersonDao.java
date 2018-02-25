@@ -17,6 +17,7 @@ public class PersonDao implements Dao<Person, Integer> {
         this.database = database;
     }
     
+    
     @Override
     public Person findOne(Integer key) throws SQLException {
 
@@ -24,7 +25,8 @@ public class PersonDao implements Dao<Person, Integer> {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person WHERE Person.id = ?");
         stmt.setObject(1, key);
         ResultSet rs = stmt.executeQuery();
-
+        
+        // If empty
         if (!rs.next()) {
             return null;
         }
@@ -37,15 +39,17 @@ public class PersonDao implements Dao<Person, Integer> {
         conn.close();
 
         return person;
-        
     }
     
-        public Person findOneWithName(String name) throws SQLException {
+    
+    public Person findOneWithName(String name) throws SQLException {
+            
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person WHERE name = ?");
         stmt.setString(1, name);
         ResultSet rs = stmt.executeQuery();
-
+        
+        // If empty
         if (!rs.next()) {
             return null;
         }
@@ -58,6 +62,7 @@ public class PersonDao implements Dao<Person, Integer> {
 
         return person;
     }
+    
     
     @Override
     public List<Person> findAll() throws SQLException {
@@ -80,9 +85,10 @@ public class PersonDao implements Dao<Person, Integer> {
         conn.close();
 
         return persons;
-        
     }
     
+    
+    // Does not include the default 'Unknown' person
     public List<Person> findAllButDefault() throws SQLException {
         
         Connection conn = database.getConnection();
@@ -103,12 +109,13 @@ public class PersonDao implements Dao<Person, Integer> {
         conn.close();
 
         return persons;
-        
     }
 
+    
     @Override
     public void delete(Integer key) throws SQLException {
-
+        
+        // Does the person exist?
         if (findOne(key) == null) {
             System.out.println("QUERY WAS NOT EXECUTED!");
         }
@@ -120,9 +127,10 @@ public class PersonDao implements Dao<Person, Integer> {
 
         stmt.close();
         conn.close();
-
     }
     
+    
+    // - Add explanation -
     public int getAndAddPersonId(String user) throws SQLException {
 
         String query = "Select Person.id from Person where Person.name = '" + user + "';";
@@ -152,9 +160,6 @@ public class PersonDao implements Dao<Person, Integer> {
         }
     }
     
-    public int defaultDirector() throws SQLException {  
-        return getAndAddPersonId("Unknown director");        
-    }
     
     @Override
     public Person saveOrUpdate(Person person) throws SQLException {
@@ -163,6 +168,7 @@ public class PersonDao implements Dao<Person, Integer> {
         }
         return update(person);
     }
+    
     
     private Person save(Person person) throws SQLException {
 
@@ -181,6 +187,7 @@ public class PersonDao implements Dao<Person, Integer> {
         
         ResultSet rs = stmt.executeQuery();
         
+        // If empty
         if (!rs.next()) {
             return null;
         }
@@ -192,6 +199,7 @@ public class PersonDao implements Dao<Person, Integer> {
         return person;
     }
     
+    
     public List<Person> searchPersonsByName(String name) throws SQLException {
         
         Connection conn = database.getConnection();
@@ -202,9 +210,7 @@ public class PersonDao implements Dao<Person, Integer> {
         List<Person> persons = new ArrayList<>();
 
         while (rs.next()) {
-            Person title = new Person(rs.getInt("id"),
-                    rs.getString("name"));
-            
+            Person title = new Person(rs.getInt("id"), rs.getString("name"));
 
             persons.add(title);
         }
@@ -214,7 +220,6 @@ public class PersonDao implements Dao<Person, Integer> {
         conn.close();
 
         return persons;
-        
     }
 
 
@@ -228,12 +233,15 @@ public class PersonDao implements Dao<Person, Integer> {
         stmt.setInt(3, findOneWithName(person.getName()).getId());
         
         stmt.executeUpdate();
-        
         stmt.close();
         conn.close();
         
         return person;
-        
     }
     
+    
+    ////////// Check this, maybe delete? //////////
+    public int defaultDirector() throws SQLException {  
+        return getAndAddPersonId("Unknown director");        
+    }
 }

@@ -70,6 +70,7 @@ public class Main {
         // Add stuff to Database
         get("/add", (req, res) -> {
             HashMap map = new HashMap<>();
+            
             map.put("titles", titleDao.findAll());
             map.put("genres", genreDao.findAll());
             map.put("people", personDao.findAll());
@@ -212,6 +213,20 @@ public class Main {
                 res.redirect("/addError");
                 return"";
             }
+            if (req.queryParams("name").isEmpty()) {
+                res.redirect("/addError");
+                return"";
+            }
+            if (req.queryParams("year").isEmpty()) {
+                res.redirect("/addError");
+                return"";
+            }
+            if (req.queryParams("length").isEmpty()) {
+                res.redirect("/addError");
+                return"";
+            }
+            // Description can be empty
+            
             
             Title title = new Title(
                     1, 
@@ -240,6 +255,12 @@ public class Main {
         // Add person - command
         post("/addPerson", (req, res) -> {
             
+            // Check if name is empty
+            if (req.queryParams("name").isEmpty()) {
+                res.redirect("/addError");
+                return"";
+            }
+            
             Person person = new Person(2, req.queryParams("name"));
             
             personDao.saveOrUpdate(person);
@@ -250,6 +271,12 @@ public class Main {
         
         // Add genre - command
         post("/addGenre", (req, res) -> {
+            
+            // Check if name is empty
+            if (req.queryParams("name").isEmpty()) {
+                res.redirect("/addError");
+                return"";
+            }
             
             Genre genre = new Genre(2, req.queryParams("name"));
             

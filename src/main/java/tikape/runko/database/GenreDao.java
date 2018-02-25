@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package tikape.runko.database;
 
 import java.sql.Connection;
@@ -14,10 +10,7 @@ import java.util.List;
 import tikape.runko.domain.Genre;
 import tikape.runko.domain.Person;
 
-/**
- *
- * @author Eetu
- */
+
 public class GenreDao implements Dao<Genre, Integer> {
 
     private Database database;
@@ -26,6 +19,7 @@ public class GenreDao implements Dao<Genre, Integer> {
         this.database = database;
     }
     
+    
     @Override
     public Genre findOne(Integer key) throws SQLException {
         
@@ -33,7 +27,8 @@ public class GenreDao implements Dao<Genre, Integer> {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Genre WHERE Genre.id = ?");
         stmt.setObject(1, key);
         ResultSet rs = stmt.executeQuery();
-
+        
+        // If empty
         if (!rs.next()) {
             return null;
         }
@@ -45,15 +40,16 @@ public class GenreDao implements Dao<Genre, Integer> {
         conn.close();
 
         return genre;
-        
     }
+    
     
     public Genre findOneWithName(String name) throws SQLException {
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Genre WHERE name = ?");
         stmt.setString(1, name);
         ResultSet rs = stmt.executeQuery();
-
+        
+        // If empty
         if (!rs.next()) {
             return null;
         }
@@ -66,7 +62,9 @@ public class GenreDao implements Dao<Genre, Integer> {
 
         return genre;
     }
-
+    
+    
+    // - Add explanation -
     public int getAndAddGenreId(String genre) throws SQLException {
 
         String query = "Select Genre.id from Genre where Genre.name = '" + genre + "';";
@@ -102,20 +100,22 @@ public class GenreDao implements Dao<Genre, Integer> {
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Genre");
         ResultSet rs = stmt.executeQuery();
-
+        
         List<Genre> genres = new ArrayList<>();
-
+        
         while (rs.next()) {
             genres.add(new Genre(rs.getInt("id"), rs.getString("name")));
         }
-
+        
         rs.close();
         stmt.close();
         conn.close();
-
+        
         return genres;
     }
     
+    
+    // Does not include the default 'Unknown' genre
     public List<Genre> findAllButDefault() throws SQLException {
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Genre WHERE id > 1");
@@ -134,6 +134,7 @@ public class GenreDao implements Dao<Genre, Integer> {
         return genres;
     }
 
+    
     @Override
     public Genre saveOrUpdate(Genre genre) throws SQLException {
         if (findOneWithName(genre.getName()) == null) {
@@ -142,22 +143,22 @@ public class GenreDao implements Dao<Genre, Integer> {
         return update(genre);
     }
     
-     private Genre save(Genre genre) throws SQLException {
+    private Genre save(Genre genre) throws SQLException {
 
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Genre (name) values (?)");
-
         stmt.setString(1, genre.getName());
         
         stmt.execute();
         stmt.close();
         
-        stmt = conn.prepareStatement("SELECT * FROM Genre WHERE name = ?");
         
+        stmt = conn.prepareStatement("SELECT * FROM Genre WHERE name = ?");
         stmt.setString(1, genre.getName());
         
         ResultSet rs = stmt.executeQuery();
         
+        // If empty
         if (!rs.next()) {
             return null;
         }
@@ -174,22 +175,21 @@ public class GenreDao implements Dao<Genre, Integer> {
         
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("UPDATE Genre SET name = ? WHERE id = ?)");
-        
         stmt.setString(1, genre.getName());
         stmt.setInt(2, findOneWithName(genre.getName()).getId());
         
         stmt.executeUpdate();
-        
         stmt.close();
         conn.close();
         
         return genre;
-        
     }
 
+    
     @Override
     public void delete(Integer key) throws SQLException {
         
+        // Does the genre exist?
         if (findOne(key) == null) {
             System.out.println("QUERY WAS NOT EXECUTED!");;
         }
@@ -198,10 +198,7 @@ public class GenreDao implements Dao<Genre, Integer> {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM Genre WHERE Genre.id = " + key);
         
         stmt.executeUpdate();
-
         stmt.close();
         conn.close();
-        
-    }
-    
+    }   
 }

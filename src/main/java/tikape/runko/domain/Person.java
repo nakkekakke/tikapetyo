@@ -35,14 +35,16 @@ public class Person {
         bio = newBio;
     }
     
+    
+    /*
     public Person defaultPerson() {
         
-        //Ehkä tarpeellinen
-        //Palauttaa default personin eli jos käyttäjä syöttää vaikka tyhjän nimen yms
-        //niin tästä metodista saa sellasen templaten
+        Maybe useful
+        Returns the default person if user inputs an empty name
+        Use this template if needed
         
         return null;
-        
     }
+    */
     
 }

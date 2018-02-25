@@ -15,12 +15,14 @@ public class TitleDao implements Dao<Title, Integer> {
     private PersonDao personDao;
     private Database database;
 
+    
     public TitleDao(Database database) {
         this.database = database;
         genreDao = new GenreDao(database);
         personDao = new PersonDao(database);
     }
 
+    
     @Override
     public Title findOne(Integer key) throws SQLException {
         
@@ -29,6 +31,7 @@ public class TitleDao implements Dao<Title, Integer> {
         stmt.setObject(1, key);
         ResultSet rs = stmt.executeQuery();
 
+        // If empty
         if (!rs.next()) {
             return null;
         }
@@ -49,12 +52,14 @@ public class TitleDao implements Dao<Title, Integer> {
         return title;
     }
 
+    
     public Title findOneWithName(String name) throws SQLException {
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE name = ?");
         stmt.setString(1, name);
         ResultSet rs = stmt.executeQuery();
 
+        // If empty
         if (!rs.next()) {
             return null;
         }
@@ -72,6 +77,7 @@ public class TitleDao implements Dao<Title, Integer> {
         return title;
     }
 
+    
     @Override
     public List<Title> findAll() throws SQLException {
 
@@ -101,6 +107,8 @@ public class TitleDao implements Dao<Title, Integer> {
         return titles;
     }
     
+    
+    // Return a list of titles where this person has been assigned at least once
     public List<Title> findTitlesWithPerson(int person_id) throws SQLException {
         List<Title> list = new ArrayList<>();
         
@@ -135,6 +143,7 @@ public class TitleDao implements Dao<Title, Integer> {
                 rs.getInt("length"),
                 rs.getString("description"));
             
+            // Check for duplicates
             for(int i = 0; i < list.size(); i++) {
                 if (list.get(i).getName().equals(title.getName())) {
                     continue BASE;
@@ -143,11 +152,12 @@ public class TitleDao implements Dao<Title, Integer> {
             
             list.add(title);
         }
+        
         rs.close();
         stmt.close();
         
         
-        // Director
+        // Writer
         PreparedStatement stmt3 = conn.prepareStatement("SELECT title_id FROM WriterTitle WHERE WriterTitle.writer_id = ?");
         stmt3.setInt(1, person_id);
         
@@ -156,6 +166,7 @@ public class TitleDao implements Dao<Title, Integer> {
         BASE2:while (rs3.next()) {
             Title title = findOne(rs3.getInt("title_id"));
             
+            // Check for duplicates
             for(int i = 0; i < list.size(); i++) {
                 if (list.get(i).getName().equals(title.getName())) {
                     continue BASE2;
@@ -164,17 +175,19 @@ public class TitleDao implements Dao<Title, Integer> {
             
             list.add(title);
         }
+        
         rs3.close();
         stmt3.close();
-        
         conn.close();
         
         return list;
     }
   
+    
     @Override
     public void delete(Integer key) throws SQLException {
         
+        // Does the title exist?
         if (findOne(key) == null) {
             System.out.println("QUERY WAS NOT EXECUTED!");;
         }
@@ -183,95 +196,90 @@ public class TitleDao implements Dao<Title, Integer> {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM Title WHERE Title.id = " + key);
         
         stmt.executeUpdate();
-
         stmt.close();
         conn.close();
-
     }   
-
-    public Person findDirector(int title) throws SQLException {
+    
+    
+    // Check if works //
+    public Person findDirector(int title_id) throws SQLException {
 
         Connection conn = database.getConnection();
-        PreparedStatement s = conn.prepareStatement("SELECT * FROM Person WHERE Person.id = Title.id "
-                + "and Title.id = " + title + ";");
-
+        PreparedStatement s = conn.prepareStatement(
+                "SELECT * FROM Person WHERE Person.director_id = " + title_id);
+        
         ResultSet r = s.executeQuery();
-
+        
         Person director = null;
-
+        
         if (r.next()) {
-
             director = new Person(r.getInt("id"), r.getString("name"));
             director.setBio(r.getString("bio"));
-
         }
-
+        
         r.close();
         s.close();
         conn.close();
-
+        
         return director;
-
     }
 
-    public List<Person> findActors(int title) throws SQLException {
+    
+    public List<Person> findActors(int title_id) throws SQLException {
 
         ArrayList<Person> persons = new ArrayList<>();
 
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT Person.* FROM Person, Title, ActorTitle "
-                + "where ActorTitle.title_id = Title.id "
-                + "and ActorTitle.actor_id = Person.id "
-                + "and Title.id = " + title);
+        PreparedStatement stmt = conn.prepareStatement(
+                  "SELECT Person.* FROM Person, ActorTitle "
+                + "WHERE Person.id = ActorTitle.actor_id"
+                + "AND ActorTitle.title_id = " + title_id);
 
         ResultSet results = stmt.executeQuery();
 
         while (results.next()) {
 
-            Person newPerson = new Person(results.getInt("id"), results.getString("name"));
-            newPerson.setBio(results.getString("bio"));
+            Person person = new Person(results.getInt("id"), results.getString("name"));
+            person.setBio(results.getString("bio"));
 
-            persons.add(newPerson);
-
+            persons.add(person);
         }
+        
         results.close();
         stmt.close();
         conn.close();
 
         return persons;
-
     }
 
-    public List<Person> findWriters(int title) throws SQLException {
+    
+    public List<Person> findWriters(int title_id) throws SQLException {
 
         ArrayList<Person> persons = new ArrayList<>();
 
-        Connection conn = database.getConnection(); //Riittääkö ainoastaan writertitle.titleid = title parametri?
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person, Title, WriterTitle "
-                + "where WriterTitle.title_id = Title.id "
-                + "and WriterTitle.writer_id = Person.id "
-                + "and Title.id = " + title);
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(
+                  "SELECT Person.* FROM Person, WriterTitle "
+                + "WHERE Person.id = WriterTitle.writer_id"
+                + "AND WriterTitle.title_id = " + title_id);
 
         ResultSet results = stmt.executeQuery();
 
         while (results.next()) {
-
             Person newPerson = new Person(results.getInt("id"), results.getString("name"));
             newPerson.setBio(results.getString("bio"));
 
             persons.add(newPerson);
-
         }
 
         stmt.close();
         conn.close();
 
         return persons;
-
     }
 
+    
     public List<Person> findPersons(int title) throws SQLException {
-
         ArrayList<Person> persons = new ArrayList<>();
 
         persons.add(findDirector(title));
@@ -285,12 +293,11 @@ public class TitleDao implements Dao<Title, Integer> {
         }
 
         return persons;
-
     }
+    
     
     public void addWriter(Integer title_id, Integer writer_id) throws SQLException {
         Connection conn = database.getConnection();
-        
         PreparedStatement statement = conn.prepareStatement(
                 "SELECT (title_id) FROM WriterTitle WHERE title_id = ? AND writer_id = ?");
         
@@ -307,32 +314,31 @@ public class TitleDao implements Dao<Title, Integer> {
             stmt.setInt(2, writer_id);
 
             stmt.executeUpdate();
-
             stmt.close();
         }
         
         rs.close();
         statement.close();
         conn.close();
-        
     }
+    
     
     public void removeWriter(Integer title_id, Integer writer_id) throws SQLException {
         Connection conn = database.getConnection();
-        
         PreparedStatement statement = conn.prepareStatement(
                 "DELETE FROM WriterTitle WHERE title_id = " + title_id + " AND writer_id = " + writer_id);
         
         try{
             statement.executeUpdate();
         } catch (SQLException e) {}
+        
         statement.close();
         conn.close();
     }
     
+    
     public void addActor(Integer title_id, Integer actor_id) throws SQLException {
         Connection conn = database.getConnection();
-        
         PreparedStatement statement = conn.prepareStatement(
                 "SELECT (title_id) FROM ActorTitle WHERE title_id = ? AND actor_id = ?");
         
@@ -349,7 +355,6 @@ public class TitleDao implements Dao<Title, Integer> {
             stmt.setInt(2, actor_id);
 
             stmt.executeUpdate();
-
             stmt.close();
         }
         
@@ -358,29 +363,34 @@ public class TitleDao implements Dao<Title, Integer> {
         conn.close();
     }
     
+    
     public void removeActor(Integer title_id, Integer actor_id) throws SQLException {
         Connection conn = database.getConnection();
-        
         PreparedStatement statement = conn.prepareStatement(
                 "DELETE FROM ActorTitle WHERE title_id = " + title_id + " AND actor_id = " + actor_id);
         
         try{
             statement.executeUpdate();
         } catch (SQLException e) {}
+        
         statement.close();
         conn.close();
     }
     
+    
+    // Remove relevant writer and actor connections
     public void removeStaff(Integer title_id) throws SQLException {
         Connection conn = database.getConnection();
-        
         PreparedStatement statement = conn.prepareStatement(
                 "DELETE FROM ActorTitle WHERE title_id = " + title_id);
         
         try{
             statement.executeUpdate();
         } catch (SQLException e) {}
+        
         statement.close();
+        
+        //----//
         
         PreparedStatement statement2 = conn.prepareStatement(
                 "DELETE FROM WriterTitle WHERE title_id = " + title_id);
@@ -388,20 +398,25 @@ public class TitleDao implements Dao<Title, Integer> {
         try{
             statement2.executeUpdate();
         } catch (SQLException e) {}
+        
         statement2.close();
         conn.close();
     }
     
+    
+    // Remove relevant title connections
     public void removePersonTitle(Integer person_id) throws SQLException {
         Connection conn = database.getConnection();
-        
         PreparedStatement statement = conn.prepareStatement(
                 "DELETE FROM ActorTitle WHERE actor_id = " + person_id);
         
         try{
             statement.executeUpdate();
         } catch (SQLException e) {}
+        
         statement.close();
+        
+        //----//
         
         PreparedStatement statement2 = conn.prepareStatement(
                 "DELETE FROM WriterTitle WHERE writer_id = " + person_id);
@@ -409,12 +424,13 @@ public class TitleDao implements Dao<Title, Integer> {
         try{
             statement2.executeUpdate();
         } catch (SQLException e) {}
+        
         statement2.close();
         conn.close();
     }
     
+    
     public List<Title> searchTitlesByParameter(String parameter, String s) throws SQLException {
-        
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM Title WHERE Title." + parameter + " LIKE '%" + s + "%'");
@@ -440,8 +456,8 @@ public class TitleDao implements Dao<Title, Integer> {
         conn.close();
 
         return titles;
-        
-    }  
+    }
+    
     
     @Override
     public Title saveOrUpdate(Title title) throws SQLException {
@@ -451,11 +467,12 @@ public class TitleDao implements Dao<Title, Integer> {
         return update(title);
     }
     
+    
     private Title addTitle(Title title) throws SQLException {
-
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Title (director_id, genre_id, name, year, description, length) values (?, ?, ?, ?, ?, ?)");
-                
+        PreparedStatement stmt = conn.prepareStatement(
+                "INSERT INTO Title (director_id, genre_id, name, year, description, length) "
+              + "VALUES (?, ?, ?, ?, ?, ?)");
         stmt.setInt(1, title.getDirector().getId());
         stmt.setInt(2, title.getGenre().getId());
         stmt.setString(3, title.getName());
@@ -466,13 +483,14 @@ public class TitleDao implements Dao<Title, Integer> {
         stmt.execute();
         stmt.close();
         
-        stmt = conn.prepareStatement("SELECT * FROM Title WHERE director_id = ? AND name = ?");
         
+        stmt = conn.prepareStatement("SELECT * FROM Title WHERE director_id = ? AND name = ?");
         stmt.setInt(1, title.getDirector().getId());
         stmt.setString(2, title.getName());
         
         ResultSet rs = stmt.executeQuery();
         
+        // If empty
         if (!rs.next()) {
             return null;
         }
@@ -484,18 +502,19 @@ public class TitleDao implements Dao<Title, Integer> {
         return title;
     }
     
+    
     private Title update(Title title) throws SQLException {
         
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("UPDATE Title SET director_id = ?, genre_id = ?, name = ?, year = ?, description = ?, length = ? WHERE id = ?");
-        
+        PreparedStatement stmt = conn.prepareStatement(
+                "UPDATE Title SET director_id = ?, genre_id = ?, name = ?, year = ?, description = ?, length = ? WHERE id = ?");
         stmt.setInt(1, title.getDirector().getId());
         stmt.setInt(2, title.getGenre().getId());
         stmt.setString(3, title.getName());
         stmt.setInt(4, title.getYear());
         stmt.setString(5, title.getDescription());
         stmt.setInt(6, title.getLength());
-        stmt.setInt(6, findOneWithName(title.getName()).getId());
+        stmt.setInt(7, findOneWithName(title.getName()).getId());
         
         stmt.executeUpdate();
         
@@ -503,23 +522,27 @@ public class TitleDao implements Dao<Title, Integer> {
         conn.close();
         
         return title;
-        
     }
     
+    
+    // Set default genre for title
     public void defaultGenre(Integer id) throws SQLException {
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("UPDATE Title SET genre_id = 1 WHERE id = " + id);
+        
         stmt.executeUpdate();
         stmt.close();
         conn.close();
     }
     
+    
+    // Set default director for title
     public void defaultDirector(Integer id) throws SQLException {
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("UPDATE Title SET director_id = 1 WHERE id = " + id);
+        
         stmt.executeUpdate();
         stmt.close();
         conn.close();
     }
-
 }

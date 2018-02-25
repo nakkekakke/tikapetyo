@@ -24,6 +24,8 @@ public class Title {
         this.description = description;
         this.actors = new ArrayList<>();
         this.writers = new ArrayList<>();
+        
+        // Place defaults
         this.genre = new Genre(1, "Unknown");
         this.director = new Person(1, "Unknown");
     }
@@ -88,4 +90,7 @@ public class Title {
         return description;
     }
     
+    public void setDescription(String desc) {
+        this.description = desc;
+    }
 }
