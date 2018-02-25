@@ -280,24 +280,21 @@ public class IMDBReader {
         addTitleToDatabase(title, director, genre);
         addActorsToDatabase(actors, title);
         addWritersToDatabase(writers, title);
-
+        
+        System.out.println("Successfully added '" + name + "' to database.");
+        System.out.println("");
     }
 
     private void addTitleToDatabase(Title title, String director, String genre) throws SQLException {
         
         int director_id = personDao.getAndAddPersonId(director);  
         int genre_id = genreDao.getAndAddGenreId(genre);
-        
-        System.out.println("1");
-        
+
         title.setDirector(new Person(director_id, director));     
         title.setGenre(new Genre(genre_id, genre));
         
-        System.out.println("2");
         
-        titleDao.saveOrUpdate(title);
-        
-        System.out.println("3");
+        titleDao.saveOrUpdate(title); 
         
     }
     

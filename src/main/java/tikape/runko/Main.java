@@ -20,7 +20,6 @@ public class Main {
         Database database = new Database("jdbc:sqlite:imbd.db");
         
         IMDBReader imdb = new IMDBReader(database);
-        imdb.addTitleFromIMDB("http://www.imdb.com/title/tt0110912/?ref_=nv_sr_1");
         
         TitleDao titleDao = new TitleDao(database);
         PersonDao personDao = new PersonDao(database);
