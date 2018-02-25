@@ -235,7 +235,7 @@ public class TitleDao implements Dao<Title, Integer> {
         ArrayList<Person> persons = new ArrayList<>();
 
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person, Title, ActorTitle "
+        PreparedStatement stmt = conn.prepareStatement("SELECT Person.* FROM Person, Title, ActorTitle "
                 + "where ActorTitle.title_id = Title.id "
                 + "and ActorTitle.actor_id = Person.id "
                 + "and Title.id = " + title);

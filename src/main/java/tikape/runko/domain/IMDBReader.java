@@ -305,7 +305,7 @@ public class IMDBReader {
         for (String s : actors) {
             
             int actor_id = personDao.getAndAddPersonId(s); 
-            titleDao.addActor(actor_id, title_id);
+            titleDao.addActor(title_id, actor_id);
             
         }
         
@@ -318,7 +318,7 @@ public class IMDBReader {
         for (String s : writers) {
             
             int writer_id = personDao.getAndAddPersonId(s); 
-            titleDao.addWriter(writer_id, title_id);
+            titleDao.addWriter(title_id, writer_id);
             
         }
         

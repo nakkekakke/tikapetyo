@@ -23,13 +23,16 @@ public class Main {
         IMDBReader imdb = new IMDBReader(database);
         
         TitleDao titleDao = new TitleDao(database);
+        
+        System.out.println("list size: " + titleDao.findActors(2).size());
+        
         PersonDao personDao = new PersonDao(database);
         GenreDao genreDao = new GenreDao(database);
         
         get("/resetDatabase", (req, res) -> {
             HashMap map = new HashMap<>();
             
-            database.resetDatabase();
+            database.resetDatabase(false);
             
             res.redirect("/");
             return null;
