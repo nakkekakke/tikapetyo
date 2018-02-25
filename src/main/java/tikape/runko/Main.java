@@ -37,6 +37,15 @@ public class Main {
             res.redirect("/");
             return null;
         }, new ThymeleafTemplateEngine());
+        
+        get("/resetDatabase/hard", (req, res) -> {
+            HashMap map = new HashMap<>();
+            
+            database.resetDatabase(true);
+            
+            res.redirect("/");
+            return null;
+        }, new ThymeleafTemplateEngine());
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
