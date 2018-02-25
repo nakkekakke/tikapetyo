@@ -115,6 +115,24 @@ public class GenreDao implements Dao<Genre, Integer> {
 
         return genres;
     }
+    
+    public List<Genre> findAllButDefault() throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Genre WHERE id > 1");
+        ResultSet rs = stmt.executeQuery();
+
+        List<Genre> genres = new ArrayList<>();
+
+        while (rs.next()) {
+            genres.add(new Genre(rs.getInt("id"), rs.getString("name")));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+
+        return genres;
+    }
 
     @Override
     public Genre saveOrUpdate(Genre genre) throws SQLException {
