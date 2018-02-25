@@ -78,8 +78,18 @@ public class GenreDao implements Dao<Genre, Integer> {
 
         
         if (results.next()) { 
-            return results.getInt("id");         
+            
+            int id = results.getInt("id");
+            results.close();
+            s.close();
+            c.close();
+            
+            return id;         
         } else {
+            
+            results.close();
+            s.close();
+            
             PreparedStatement userStmt = c.prepareStatement("INSERT INTO Genre (name) values ('" + genre + "');");
             userStmt.execute();
             return getAndAddGenreId(genre);

@@ -454,7 +454,7 @@ public class TitleDao implements Dao<Title, Integer> {
     private Title update(Title title) throws SQLException {
         
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("UPDATE Title SET director_id = ?, genre_id = ? name = ? year = ?, description = ? length = ? WHERE id = ?)");
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Title SET director_id = ?, genre_id = ?, name = ?, year = ?, description = ?, length = ? WHERE id = ?");
         
         stmt.setInt(1, title.getDirector().getId());
         stmt.setInt(2, title.getGenre().getId());

@@ -283,7 +283,7 @@ public class IMDBReader {
 
     }
 
-    public void addTitleToDatabase(Title title, String director, String genre) throws SQLException {
+    private void addTitleToDatabase(Title title, String director, String genre) throws SQLException {
         
         int director_id = personDao.getAndAddPersonId(director);  
         int genre_id = genreDao.getAndAddGenreId(genre);
@@ -301,7 +301,7 @@ public class IMDBReader {
         
     }
     
-    public void addActorsToDatabase(ArrayList<String> actors, Title title) throws SQLException {
+    private void addActorsToDatabase(ArrayList<String> actors, Title title) throws SQLException {
 
         int title_id = titleDao.findOneWithName(title.getName()).getId();
         
@@ -314,7 +314,7 @@ public class IMDBReader {
         
     }
     
-    public void addWritersToDatabase(ArrayList<String> writers, Title title) throws SQLException {
+    private void addWritersToDatabase(ArrayList<String> writers, Title title) throws SQLException {
 
         int title_id = titleDao.findOneWithName(title.getName()).getId();
         
