@@ -230,10 +230,8 @@ public class TitleDao implements Dao<Title, Integer> {
         ArrayList<Person> persons = new ArrayList<>();
 
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(
-                  "SELECT Person.* FROM Person, ActorTitle "
-                + "WHERE Person.id = ActorTitle.actor_id"
-                + "AND ActorTitle.title_id = " + title_id);
+        PreparedStatement stmt = conn.prepareStatement("SELECT Person.* FROM Person, ActorTitle "
+                + "WHERE Person.id = ActorTitle.actor_id AND ActorTitle.title_id = " + title_id);
 
         ResultSet results = stmt.executeQuery();
 
@@ -258,10 +256,8 @@ public class TitleDao implements Dao<Title, Integer> {
         ArrayList<Person> persons = new ArrayList<>();
 
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(
-                  "SELECT Person.* FROM Person, WriterTitle "
-                + "WHERE Person.id = WriterTitle.writer_id"
-                + "AND WriterTitle.title_id = " + title_id);
+        PreparedStatement stmt = conn.prepareStatement("SELECT Person.* FROM Person, WriterTitle "
+                + "WHERE Person.id = WriterTitle.writer_id AND WriterTitle.title_id = " + title_id);
 
         ResultSet results = stmt.executeQuery();
 
