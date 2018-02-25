@@ -10,6 +10,7 @@ import tikape.runko.database.GenreDao;
 import tikape.runko.database.PersonDao;
 import tikape.runko.database.TitleDao;
 import tikape.runko.domain.Genre;
+import tikape.runko.domain.IMDBReader;
 import tikape.runko.domain.Person;
 import tikape.runko.domain.Title;
 
@@ -17,7 +18,10 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:imbd.db");
-
+        
+        IMDBReader imdb = new IMDBReader(database);
+        imdb.addTitleFromIMDB("http://www.imdb.com/title/tt0110912/?ref_=nv_sr_1");
+        
         TitleDao titleDao = new TitleDao(database);
         PersonDao personDao = new PersonDao(database);
         GenreDao genreDao = new GenreDao(database);
