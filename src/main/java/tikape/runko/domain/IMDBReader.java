@@ -17,14 +17,14 @@ public class IMDBReader {
     private PersonDao personDao;
     private TitleDao titleDao;
     private GenreDao genreDao;
-    
+
     public IMDBReader(Database d) {
         database = d;
         personDao = new PersonDao(database);
         titleDao = new TitleDao(database);
         genreDao = new GenreDao(database);
     }
-    
+
     public void addTitleFromIMDB(String address) throws MalformedURLException, IOException, SQLException {
 
         int year = 0;
@@ -200,6 +200,8 @@ public class IMDBReader {
 
                 int i = 0;
 
+                boolean hours = false;
+
                 for (Character c : nextLine.toCharArray()) {
 
                     if (c >= '0' && c <= '9') {
@@ -208,18 +210,25 @@ public class IMDBReader {
 
                     if (c == 'h') {
                         i++;
+                        hours = true;
                     }
 
                 }
 
                 int minutes = 0;
 
-                if (stringLength[0].length() > 0) {
-                    minutes += 60 * Integer.parseInt(stringLength[0]);
-                }
+                if (hours) {
+                    if (stringLength[0].length() > 0) {
+                        minutes += 60 * Integer.parseInt(stringLength[0]);
+                    }
 
-                if (stringLength[1].length() > 0) {
-                    minutes += Integer.parseInt(stringLength[1]);
+                    if (stringLength[1].length() > 0) {
+                        minutes += Integer.parseInt(stringLength[1]);
+                    }
+                } else {
+                    if (stringLength[0].length() > 0) {
+                        minutes += Integer.parseInt(stringLength[0]);
+                    }
                 }
 
                 length = minutes;
@@ -276,52 +285,51 @@ public class IMDBReader {
         System.out.println("DONE\n");
 
         Title title = new Title(0, name, year, length, description);
-        
+
         addTitleToDatabase(title, director, genre);
         addActorsToDatabase(actors, title);
         addWritersToDatabase(writers, title);
-        
+
         System.out.println("Successfully added '" + name + "' to database.");
         System.out.println("");
     }
 
     private void addTitleToDatabase(Title title, String director, String genre) throws SQLException {
-        
-        int director_id = personDao.getAndAddPersonId(director);  
+
+        int director_id = personDao.getAndAddPersonId(director);
         int genre_id = genreDao.getAndAddGenreId(genre);
 
-        title.setDirector(new Person(director_id, director));     
+        title.setDirector(new Person(director_id, director));
         title.setGenre(new Genre(genre_id, genre));
-        
-        
-        titleDao.saveOrUpdate(title); 
-        
+
+        titleDao.saveOrUpdate(title);
+
     }
-    
+
     private void addActorsToDatabase(ArrayList<String> actors, Title title) throws SQLException {
 
         int title_id = titleDao.findOneWithName(title.getName()).getId();
-        
+
         for (String s : actors) {
-            
-            int actor_id = personDao.getAndAddPersonId(s); 
+
+            int actor_id = personDao.getAndAddPersonId(s);
             titleDao.addActor(title_id, actor_id);
-            
+
         }
-        
+
     }
-    
+
     private void addWritersToDatabase(ArrayList<String> writers, Title title) throws SQLException {
 
         int title_id = titleDao.findOneWithName(title.getName()).getId();
-        
+
         for (String s : writers) {
-            
-            int writer_id = personDao.getAndAddPersonId(s); 
+
+            int writer_id = personDao.getAndAddPersonId(s);
             titleDao.addWriter(title_id, writer_id);
-            
+
         }
-        
-    }  
+
+    }
 
 }
