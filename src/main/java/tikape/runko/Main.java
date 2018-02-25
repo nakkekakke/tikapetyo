@@ -109,7 +109,6 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         
         get("/titles/:id/delete", (req, res) -> {
-            HashMap map = new HashMap<>();
             
             titleDao.delete(Integer.parseInt(req.params("id")));
             titleDao.removeStaff(Integer.parseInt(req.params("id")));
