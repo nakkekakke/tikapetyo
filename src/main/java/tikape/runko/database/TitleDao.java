@@ -264,7 +264,7 @@ public class TitleDao implements Dao<Title, Integer> {
 
         Connection conn = database.getConnection(); //Riittääkö ainoastaan writertitle.titleid = title parametri?
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person, Title, WriterTitle "
-                + "where WriterTitle.title_id = Title "
+                + "where WriterTitle.title_id = Title.id "
                 + "and WriterTitle.writer_id = Person.id "
                 + "and Title.id = " + title);
 
@@ -303,35 +303,88 @@ public class TitleDao implements Dao<Title, Integer> {
         return persons;
 
     }
-
-    public void addActor(int person, int title) throws SQLException {
-
+    
+    public void addWriter(Integer title_id, Integer writer_id) throws SQLException {
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO ActorTitle (title_id, actor_id) values ("
-                + title + ", " + person + ");");
         
-        stmt.execute();
-        stmt.close();
+        PreparedStatement statement = conn.prepareStatement(
+                "SELECT (title_id) FROM WriterTitle WHERE title_id = ? AND writer_id = ?");
+        
+        statement.setInt(1, title_id);
+        statement.setInt(2, writer_id);
+        
+        ResultSet rs = statement.executeQuery();
+        
+        if (!rs.next()) {
+            PreparedStatement stmt = conn.prepareStatement(
+                    "INSERT INTO WriterTitle (title_id,writer_id) VALUES (?,?)");
+        
+            stmt.setInt(1, title_id);
+            stmt.setInt(2, writer_id);
+
+            stmt.executeUpdate();
+
+            stmt.close();
+        }
+        
+        rs.close();
+        statement.close();
         conn.close();
         
     }
     
-    public void addWriter(int person, int title) throws SQLException {
-
+    public void addActor(Integer title_id, Integer actor_id) throws SQLException {
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO WriterTitle (title_id, writer_id) values ("
-                + title + ", " + person + ");");
         
-        stmt.execute();
-        stmt.close();
+        PreparedStatement statement = conn.prepareStatement(
+                "SELECT (title_id) FROM ActorTitle WHERE title_id = ? AND actor_id = ?");
+        
+        statement.setInt(1, title_id);
+        statement.setInt(2, actor_id);
+        
+        ResultSet rs = statement.executeQuery();
+        
+        if (!rs.next()) {
+            PreparedStatement stmt = conn.prepareStatement(
+                    "INSERT INTO ActorTitle (title_id,actor_id) VALUES (?,?)");
+        
+            stmt.setInt(1, title_id);
+            stmt.setInt(2, actor_id);
+
+            stmt.executeUpdate();
+
+            stmt.close();
+        }
+        
+        rs.close();
+        statement.close();
         conn.close();
         
+    }
+    
+    public List<Person> findActorByTitle(Integer title_id) throws SQLException {
+        Connection conn = database.getConnection();
+        
+        PreparedStatement statement = conn.prepareStatement(
+                "SELECT (actor_id) FROM ActorTitle WHERE title_id = ?");
+        
+        statement.setInt(1, title_id);
+        
+        ResultSet rs = statement.executeQuery();
+        
+        List<Person> list = new ArrayList<>();
+        
+        while (rs.next()) {
+            list.add(personDao.findOne(rs.getInt("title_id")));
+        }
+        
+        return list;
     }
     
     public List<Title> searchTitlesByParameter(String parameter, String s) throws SQLException {
         
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE Title." + parameter + " LIKE '%" + s + "%';");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title WHERE Title." + parameter + " LIKE '%" + s + "%'");
         ResultSet rs = stmt.executeQuery();
 
         List<Title> titles = new ArrayList<>();

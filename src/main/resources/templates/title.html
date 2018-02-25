@@ -5,38 +5,38 @@
         <title th:text="${name}">name</title>
         <meta charset="utf-8" />
 		<style>
-* {
-    box-sizing: border-box;
-}
+		* {
+			box-sizing: border-box;
+		}
 
-body {
-    margin: 0;
-}
+		body {
+			margin: 5;
+		}
 
-/* Create two unequal columns that floats next to each other */
-.column {
-    float: left;
-    padding: 10px;
-    height: 300px; /* Should be removed. Only for demonstration */
-}
+		/* Create two unequal columns that floats next to each other */
+		.column {
+			float: left;
+			padding: 10px;
+			height: 300px; /* Should be removed. Only for demonstration */
+		}
 
-.left {
-  width: 25%;
-}
+		.left {
+		  width: 25%;
+		}
 
-.right {
-  width: 75%;
-}
+		.right {
+		  width: 75%;
+		}
 
-/* Clear floats after the columns */
+		/* Clear floats after the columns */
 
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-}
+		.row:after {
+			content: "";
+			display: table;
+			clear: both;
+		}
 
-</style>
+		</style>
     </head>
 
     <body>
@@ -56,10 +56,34 @@ body {
 			<div class="column">
 				<h3>Writers:</h3>
 				<p><span th:each="writer: ${writers}"><span th:text="${writer.name}">name</span><br></span></p>
+				
+				<br><br>
+				
+				<form method="POST" action="/addWriter">
+					Add writer:<br>
+					<select name="writerDrop">
+						<span th:each="writerChoice: ${people}"><option th:name="${writerChoice.id}"><span th:text="${writerChoice.name}">writer</span></option></span>
+					</select><br><br>
+					<input type="submit" value="Add"/>
+				</form>
+			</div>
+			<div class="column">
+				&emsp;&emsp;&emsp;&emsp;
 			</div>
 			<div class="column">
 				<h3>Actors:</h3>
-				<p><span th:each="writer: ${writers}"><span th:text="${writer.name}">name</span><br></span></p>
+				<p><span th:each="actor: ${actors}"><span th:text="${actor.name}">actor</span><br></span></p>
+				
+				<br><br>
+				
+				<form method="POST" action="/addActor">
+					Add actor:<br>
+					<select name="actorDrop">
+						<span th:each="actorChoice: ${people}"><option th:name="${actorChoice.id}"><span th:text="${actorChoice.name}">actor</span></option></span>
+					</select><br><br>
+					<input type="submit" value="Add"/>
+				</form>
+				
 			</div>
 		</div>
 		
