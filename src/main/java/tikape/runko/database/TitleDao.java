@@ -101,7 +101,7 @@ public class TitleDao implements Dao<Title, Integer> {
         return titles;
     }
 
-    public List<Title> findTitlesWithPerson(Person person) throws SQLException {
+    public List<Title> findTitlesWithPerson(int person_id) throws SQLException {
 
         
         //Actor
@@ -111,7 +111,7 @@ public class TitleDao implements Dao<Title, Integer> {
         q.append("ActorTitle.actor_id = Person.id and ");
         q.append("ActorTitle.title_id = Title.id and ");
         q.append("Person.id = ");
-        q.append(person.getId());
+        q.append(person_id);
         
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(q.toString());
@@ -142,7 +142,7 @@ public class TitleDao implements Dao<Title, Integer> {
         q.append("WriterTitle.writer_id = Person.id and ");
         q.append("WriterTitle.title_id = Title.id and ");
         q.append("Person.id = ");
-        q.append(person.getId());
+        q.append(person_id);
         
 
         stmt = conn.prepareStatement(q.toString());
