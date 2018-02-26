@@ -49,7 +49,7 @@ public class Database {
         for (String table : tables) {
             String tableName = table.split(" ")[0];
             try {
-                stmt = c.prepareStatement("Select * from " + tableName + ";");
+                stmt = c.prepareStatement("Select * from " + tableName);
                 stmt.execute();
                 stmt.close();
 
