@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 import tikape.runko.database.Database;
 import tikape.runko.database.GenreDao;
@@ -200,40 +201,33 @@ public class IMDBReader {
             }
 
             //Movie stars
-            if (line.contains("<b>Stars:</b> ")) {
+            if (line.contains("<h4 class=\"inline\">Stars:</h4>")) {
 
-                if (foundActors) {
-                    continue;
-                }
+                        if (foundActors) {
+                            continue;
+                        }
+                        
+                        foundActors = true;
+                
+                        while (reader.hasNextLine()) {
 
-                while (reader.hasNextLine()) {
+                            line = reader.nextLine();
+                            if (line.contains("itemprop=\"name\">")) {
+                                String actor = line.split("itemprop=\"name\">")[1].split("</span>")[0];
+                                actor = actor.replaceAll(";", "");
+                                actor = actor.replaceAll("´", "");
 
-                    line = reader.nextLine();
+                                actors.add(actor);
+                            }
+                            
+                            if (line.contains("See full cast")) {
+                                break;
+                            }
 
-                    if (line.contains("</span></div>")) {
+                        }
 
-                        String[] split = line.split("</span></div>");
-
-                        String actor = split[0].replaceAll("'", "");
-                        actor = actor.replaceAll(";", "");
-                        actor = actor.replaceAll("´", "");
-                        writers.add(split[0]);
-
-                        actors.add(actor);
-                        break;
-
-                    } else {
-
-                        String[] split = line.split(",");
-                        actors.add(split[0]);
-
+                       
                     }
-
-                }
-
-                foundActors = true;
-
-            }
 
             //Movie length in minutes
             if (line.contains("itemprop=\"duration\"")) {
@@ -298,11 +292,10 @@ public class IMDBReader {
 
                         String[] split = line.split("<span class=\"itemprop\" itemprop=\"name\">");
                         split = split[1].split("<");
-                        
+
                         String actor = split[0].replaceAll("'", "");
                         actor = actor.replaceAll(";", "");
                         actor = actor.replaceAll("´", "");
-                        actors.add(split[0]);
 
                         actors.add(actor);
 
@@ -357,33 +350,36 @@ public class IMDBReader {
 
     public void addTemplateMovies(int amount) throws IOException, MalformedURLException, SQLException {
 
-        if (amount > 250) {
-            amount = 250;
+        System.out.println("-------------------------------------------------------------------------");
+        
+        if (amount > 700) {
+            amount = 700;
         }
 
-        String address = "http://www.imdb.com/chart/top?ref_=nv_mv_250_6";
+        String[] addresses = new String[4];
+        addresses[0] = "http://www.imdb.com/chart/top?ref_=nv_mv_250_6";
+        addresses[1] = "http://www.imdb.com/chart/toptv/?ref_=nv_tvv_250_3";
+        addresses[2] = "http://www.imdb.com/chart/moviemeter?ref_=nv_mv_mpm_8";
+        addresses[3] = "http://www.imdb.com/chart/tvmeter?ref_=nv_tvv_mptv_4";
 
-        System.out.println("Starting to get template movies from: " + address);
+        
 
         URL url = null;
-
-        try {
-            url = new URL(address);
+        HashSet<String> movieLinks = new HashSet<>();
+        int added = 0;
+        
+        for (int i = 0; i < addresses.length; i++) {
+            System.out.println("Starting to get template movies from: " + addresses[i]);
+            try {
+            url = new URL(addresses[i]);
         } catch (Exception e) {
             System.out.println("Error in getting IMDB movie. Returning.");
             return;
         }
 
         Scanner reader = new Scanner(url.openStream());
-        int added = 0;
-
-        ArrayList<String> movieLinks = new ArrayList<>();
 
         while (reader.hasNextLine()) {
-
-            if (added >= amount) {
-                break;
-            }
 
             String line = reader.nextLine();
 
@@ -392,32 +388,43 @@ public class IMDBReader {
                 line = reader.nextLine();
 
                 String link = line.split("<a href=\"")[1].split("\" title")[0].split("/?pf")[0];
-                movieLinks.add("https://www.imdb.com" + link);
-                added++;
+                if (movieLinks.add("https://www.imdb.com" + link)) {
+                    added++;
+                }
             }
 
         }
+        }
+        
+        if (amount > movieLinks.size()) {
+            amount = movieLinks.size();
+        }
 
-        System.out.println("Starting to add " + amount + " title to database.");
+        System.out.println("Found " + movieLinks.size() + " IMDB links.");
+        System.out.println("Starting to add " + amount + " movies to database.");
         System.out.println("");
 
         java.util.Random rng = new java.util.Random();
+        
+        ArrayList<String> links = new ArrayList<>(movieLinks);
 
-        while (movieLinks.size() > 0) {
-            int i = rng.nextInt(movieLinks.size());
-            String link = movieLinks.get(i);
-            movieLinks.remove(i);
+        added = 0;
+        
+        while (links.size() > 0 && added < amount) {
+            int i = rng.nextInt(links.size());
+            String link = links.get(i);
+            links.remove(i);
 
-            System.out.println("Remaining movies to add: " + added);
+            System.out.println("Remaining movies to add: " + (amount - added));
             System.out.println("Adding movie from: " + link);
-            
+
             try {
                 addTitleFromIMDB(link);
+                added++;
             } catch (Exception e) {
                 System.out.println("Failed to add movie: " + link);
             }
-
-            added--;
+ 
             System.out.println("");
         }
 
@@ -431,6 +438,11 @@ public class IMDBReader {
             System.out.println("");
         }
          */
+        
+        System.out.println("");
+        System.out.println("Succesfulky added template movies.");
+        System.out.println("-------------------------------------------------------------------------");
+        
     }
 
     private void addTitleToDatabase(Title title, String director, String genre) throws SQLException {
