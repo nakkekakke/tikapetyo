@@ -63,13 +63,25 @@
 		
 		<div class="row">
 			<div class="column">
-				<h3>Writers:</h3>
-				<p><span th:each="writer: ${writers}"><span th:text="${writer.name}">writer</span><br></span></p>
+				<h3>Actors:</h3>
+                                
+                                <tr th:each="actor : ${actors}">
+                                    <a th:href="${'/people/' + actor.id}"/><br/>
+                                    <td th:text="${actor.name}"></td>
+                                    </a>
+                                </tr>
+                                                          
 				<br><br>
 			</div>
-			<div class="column">
-				<h3>Actors:</h3>
-				<p><span th:each="actor: ${actors}"><span th:text="${actor.name}">actor</span><br></span></p>
+                        <div class="column">
+				<h3>Writers:</h3>
+                                
+                                <tr th:each="writer : ${writers}">
+                                    <a th:href="${'/people/' + writer.id}"/><br/>
+                                    <td th:text="${writer.name}"></td>
+                                    </a>
+                                </tr>
+
 				<br><br>
 			</div>
 			<div class="column">

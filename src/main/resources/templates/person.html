@@ -74,7 +74,13 @@
 			
 			<div class="right">
 				<h3>Appeared in the following movies:</h3>
-				<p><span th:each="movie: ${movies}"><span th:text="${movie.name}">movie</span><br><br></span></p>
+                                
+                                <tr th:each="movie : ${movies}">
+                                    <a th:href="${'/titles/' + movie.id}"/><br/><br/>
+                                    <td th:text="${movie.name}"></td>
+                                    </a>
+                                </tr>
+                                
 			</div>
 		</div>
 		
