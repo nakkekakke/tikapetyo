@@ -45,6 +45,15 @@ public class Main {
             res.redirect("/");
             return null;
         }, new ThymeleafTemplateEngine());
+        
+        get("/addTemplates/:amount", (req, res) -> {
+            System.out.println(req.params("amount"));
+            System.out.println("asd");
+            imdb.addTemplateMovies(Integer.parseInt(req.params("amount")));
+            
+            res.redirect("/");
+            return null;
+        }, new ThymeleafTemplateEngine());
 
         
         // Main page
