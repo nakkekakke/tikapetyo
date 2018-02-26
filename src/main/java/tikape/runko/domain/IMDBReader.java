@@ -302,7 +302,7 @@ public class IMDBReader {
                         String actor = split[0].replaceAll("'", "");
                         actor = actor.replaceAll(";", "");
                         actor = actor.replaceAll("´", "");
-                        writers.add(split[0]);
+                        actors.add(split[0]);
 
                         actors.add(actor);
 
@@ -406,6 +406,7 @@ public class IMDBReader {
         while (movieLinks.size() > 0) {
             int i = rng.nextInt(movieLinks.size());
             String link = movieLinks.get(i);
+            movieLinks.remove(i);
 
             System.out.println("Remaining movies to add: " + added);
             System.out.println("Adding movie from: " + link);
