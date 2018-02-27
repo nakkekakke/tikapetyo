@@ -17,7 +17,7 @@ import tikape.runko.domain.Title;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        Database database = new Database("jdbc:sqlite:imbd.db");
+        Database database = new Database("jdbc:sqlite:db/imbd.db");
         database.checkDatabaseValidity();
 
         IMDBReader imdb = new IMDBReader(database);

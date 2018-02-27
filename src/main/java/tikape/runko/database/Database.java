@@ -1,6 +1,10 @@
 package tikape.runko.database;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
@@ -36,10 +40,11 @@ public class Database {
     }
 
     public Connection getConnection() throws SQLException {
+        System.out.println("Got connection");
         return DriverManager.getConnection(databaseAddress);
     }
 
-    public void checkDatabaseValidity() throws SQLException, IOException {
+    public void checkDatabaseValidity() throws Exception {
 
         System.out.println("Checking database validity:");
 
@@ -58,20 +63,38 @@ public class Database {
                 System.out.println("Missing table: " + tableName);
                 System.out.println("Database is not valid. Resetting database...");
                 System.out.println("");
-                resetDatabase(true);
+                c.close();              
+                resetDatabase(true);        
                 break;
             }
         }
 
+        c.close();   
         System.out.println("Database is valid.");
 
     }
 
-    public void resetDatabase(boolean leaveEmpty) throws SQLException, IOException {
+    public void resetDatabase(boolean leaveEmpty) throws Exception {
 
         System.out.println("--------------------------------------------------------------");
         System.out.println("Starting to reset database.");
 
+        if (!leaveEmpty) {
+            System.out.println("Deleting database.");
+
+            File current = new File("db/imbd.db");
+            File template = new File("db/imdbBig.db");
+
+            current.delete();
+
+            Files.copy(template.toPath(), current.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            //Files.copy(template.toPath(), current.toPath());
+            System.out.println("Database successfully reset");
+            System.out.println("---------------------------------------------------------------");
+            return;
+        }
+        
         IMDBReader imdb = new IMDBReader(this);
         GenreDao g = new GenreDao(this);
         TitleDao t = new TitleDao(this);
@@ -113,37 +136,9 @@ public class Database {
         stmt = c.prepareStatement("INSERT INTO Genre (id,name) VALUES (1,'Unknown');");
         stmt.execute();
         stmt.close();
+        c.close();
 
-        if (leaveEmpty) {
-            System.out.println("Leaving database empty.");
-            System.out.println("Database successfully reset");
-            System.out.println("---------------------------------------------------------------");
-            return;
-        }
-
-        // Soft reset information fill
-        System.out.println("");
-        System.out.println("Adding template information to database:");
-        System.out.println("");
-
-        System.out.println("Adding Genres: ");
-
-        g.getAndAddGenreId("Action");
-        g.getAndAddGenreId("Comedy");
-        g.getAndAddGenreId("Drama");
-        g.getAndAddGenreId("Thriller");
-        g.getAndAddGenreId("Documentary");
-
-        System.out.println("");
-        System.out.println("Adding movies... ");
-        System.out.println("");
-
-        // Adding default movies from IMBD
-        for (String link : movies) {
-            System.out.println("Adding movie from link: " + link);
-            imdb.addTitleFromIMDB(link);
-        }
-
+        System.out.println("Leaving database empty.");
         System.out.println("Database successfully reset");
         System.out.println("---------------------------------------------------------------");
     }
