@@ -1,5 +1,7 @@
 package tikape.runko;
 
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import spark.ModelAndView;
@@ -12,10 +14,11 @@ import tikape.runko.database.TitleDao;
 import tikape.runko.domain.Genre;
 import tikape.runko.domain.IMDBReader;
 import tikape.runko.domain.Person;
+import tikape.runko.domain.Search;
 import tikape.runko.domain.Title;
 
 public class Main {
-
+    
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:db/imbd.db");
         database.checkDatabaseValidity();
@@ -23,11 +26,14 @@ public class Main {
         IMDBReader imdb = new IMDBReader(database);
         
         TitleDao titleDao = new TitleDao(database);
-        
-        System.out.println("list size: " + titleDao.findActors(2).size());
-        
         PersonDao personDao = new PersonDao(database);
         GenreDao genreDao = new GenreDao(database);
+        
+        Search search = new Search();
+        search.setPeople(personDao.findAllButDefault());
+        search.setTitles(titleDao.findAll());
+        
+        System.out.println(titleDao.findAll().size());
         
         // Reset tool
         get("/resetDatabase", (req, res) -> {
@@ -46,6 +52,8 @@ public class Main {
             return null;
         }, new ThymeleafTemplateEngine());
         
+        
+        // Add random movies from IMBD
         get("/addTemplates/:amount", (req, res) -> {
             imdb.addTemplateMovies(Integer.parseInt(req.params("amount")));
             
@@ -74,6 +82,42 @@ public class Main {
             
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
+        
+        
+        // Search for things
+        get("/search", (req, res) -> {
+            HashMap map = new HashMap<>();
+            
+            if (search.getType().equals("Title")) {
+                map.put("things", search.getTitles());
+                map.put("pointer", "/titles/");
+                
+                List<Integer> count1 = new ArrayList<>();
+                count1.add(1);
+                map.put("count1", count1);
+                List<Integer> count2 = new ArrayList<>();
+                count2.add(1);
+                map.put("count2", count2);
+                
+            } else if (search.getType().equals("Person")) {
+                map.put("things", search.getPeople());
+                map.put("pointer", "/people/");
+                
+                List<Integer> count = new ArrayList<>();
+                count.add(1);
+                map.put("count1", count);
+                map.put("count2", new ArrayList<>());
+                
+            } else {
+                map.put("things", genreDao.findAllButDefault());
+                map.put("pointer", "/genre/");
+                
+                map.put("count1", new ArrayList<>());
+            }
+            
+            return new ModelAndView(map, "search");
+        }, new ThymeleafTemplateEngine());
+        
         
         // Add stuff to Database
         get("/add", (req, res) -> {
@@ -292,6 +336,55 @@ public class Main {
             genreDao.saveOrUpdate(genre);
             
             res.redirect("/add");
+            return"";
+        });
+        
+        // Change search type
+        post("/searchType", (req, res) -> {
+            
+            if (req.queryParams("typeDrop").equals("Movies")) {
+                search.setType("Title");
+                
+            } else if (req.queryParams("typeDrop").equals("People")) {
+                search.setType("Person");
+                
+            } else {
+                search.setType("Genre");
+            }
+            
+            res.redirect("/search");
+            return"";
+        });
+        
+        // Search for stuff
+        post("/searchContent", (req, res) -> {
+            List<Title> titles;
+            List<Person> people;
+            
+            if (search.getType().equals("Title")) {
+                
+                // If empty, show all
+                if (req.queryParams("searchText").isEmpty()) {
+                    search.setTitles(titleDao.findAll());
+                } else {
+                    titles = titleDao.searchTitlesByParameter(req.queryParams("paramDrop"), req.queryParams("searchText"));
+
+                    search.setTitles(titles);
+                }
+            } else if (search.getType().equals("Person")) {
+                
+                // If empty, show all
+                if (req.queryParams("searchText").isEmpty()) {
+                    search.setPeople(personDao.findAll());
+                } else {
+                    people = personDao.searchPersonsByName(req.queryParams("searchText"));
+                
+                    search.setPeople(people);
+                }
+                
+            }
+            
+            res.redirect("/search");
             return"";
         });
         
