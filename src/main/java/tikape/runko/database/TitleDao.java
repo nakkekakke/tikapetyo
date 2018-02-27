@@ -427,12 +427,39 @@ public class TitleDao implements Dao<Title, Integer> {
     
     
     public List<Title> searchTitlesByParameter(String parameter, String s) throws SQLException {
+        List<Title> titles = new ArrayList<>();
+        
         Connection conn = database.getConnection();
+        
+        if (parameter.equals("genre")) {
+            
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT Title.* FROM Title, Genre WHERE Title.genre_id = Genre.id AND Genre.name LIKE '%" + s + "%'");
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                Title title = new Title(rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("year"),
+                        rs.getInt("length"),
+                        rs.getString("description"));
+
+                title.setDirector(personDao.findOne(rs.getInt("director_id")));
+                title.setGenre(genreDao.findOne(rs.getInt("genre_id")));
+
+                titles.add(title);
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+            
+            return titles;
+        }
+        
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM Title WHERE Title." + parameter + " LIKE '%" + s + "%'");
         ResultSet rs = stmt.executeQuery();
-
-        List<Title> titles = new ArrayList<>();
 
         while (rs.next()) {
             Title title = new Title(rs.getInt("id"),
