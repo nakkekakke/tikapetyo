@@ -223,7 +223,6 @@ public class Main {
             HashMap map = new HashMap<>();
             Genre genre = genreDao.findOne(Integer.parseInt(req.params("id")));
             
-            
             map.put("movies", titleDao.searchTitlesByParameter("genre", 
                     genreDao.findOne(Integer.parseInt(req.params("id"))).getName()));
             
