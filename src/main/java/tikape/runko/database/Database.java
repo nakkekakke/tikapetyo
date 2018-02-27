@@ -39,7 +39,7 @@ public class Database {
     }
 
     public Connection getConnection() throws SQLException {
-        System.out.println("Got connection");
+        //System.out.println("Got connection");
         return DriverManager.getConnection(databaseAddress);
     }
 

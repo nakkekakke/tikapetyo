@@ -12,7 +12,13 @@
 		<a th:href="${delete}">delete</a>
 		</font>
 		</span> </h1>
-		
+		<br>
+		<h3>Related movies of this genre:</h3>
+		<tr th:each="movie : ${movies}">
+			<a th:href="${'/titles/' + movie.id}"/><br/><br/>
+			<td th:text="${movie.name}"></td>
+			</a>
+		</tr>
 		<br><br><br><br>
 		
 		<a href="/">Home</a>
