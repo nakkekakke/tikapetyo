@@ -74,7 +74,7 @@
 			</div>
 			
 			<div class="right">
-				<h3>Appears in the following movies:</h3>
+				<h3>Appears in the following titles:</h3>
 				<tr th:each="movie : ${movies}">
 					<a th:href="${'/titles/' + movie.id}"/><br/><br/>
 					<td th:text="${movie.name}"></td>

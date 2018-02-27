@@ -344,7 +344,7 @@ public class Main {
         // Change search type
         post("/searchType", (req, res) -> {
             
-            if (req.queryParams("typeDrop").equals("Movies")) {
+            if (req.queryParams("typeDrop").equals("Titles")) {
                 search.setType("Title");
                 
             } else if (req.queryParams("typeDrop").equals("People")) {
@@ -377,7 +377,7 @@ public class Main {
                 
                 // If empty, show all
                 if (req.queryParams("searchText").isEmpty()) {
-                    search.setPeople(personDao.findAll());
+                    search.setPeople(personDao.findAllButDefault());
                 } else {
                     people = personDao.searchPersonsByName(req.queryParams("searchText"));
                 
