@@ -8,7 +8,7 @@ Sovelluksen pääasiallinen toiminta perustuu elokuvien (tai sarjojen yms.) lis�
 
 
 #### [Home](http://tikapetyo.herokuapp.com/)
-Sovelluksen kotisivu. Sisältää sattumanvaraisesti tietokannasta valitun "Featured Title":n, sekä linkin **elokuvan omalle sivulle**. Kotisivulla on myös linkit **hakusivulle** sekä **lisäyssivulle**.
+Sovelluksen kotisivu. Sisältää sattumanvaraisesti tietokannasta valitun "Featured Titlen", sekä linkin **elokuvan omalle sivulle**. Kotisivulla on myös linkit **hakusivulle** sekä **lisäyssivulle**.
 
 #### [Hakusivu](http://tikapetyo.herokuapp.com/search)
 Oletusarvoisesti hakee elokuvia nimen perusteella. Parametreja voi muuttaa dropdown-listojen avulla.
