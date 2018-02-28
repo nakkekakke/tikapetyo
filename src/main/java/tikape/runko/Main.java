@@ -279,7 +279,7 @@ public class Main {
                 res.redirect("/addError");
                 return"";
             }
-            if (req.queryParams("name").isEmpty()) {
+            if (titleDao.searchNotAllowed(req.queryParams("name"))) {
                 res.redirect("/addError");
                 return"";
             }
