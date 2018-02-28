@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import tikape.runko.domain.Person;
 import tikape.runko.domain.Title;
 
@@ -14,12 +16,14 @@ public class TitleDao implements Dao<Title, Integer> {
     private GenreDao genreDao;
     private PersonDao personDao;
     private Database database;
+    private final Pattern notAllowed;
 
     
     public TitleDao(Database database) {
         this.database = database;
         genreDao = new GenreDao(database);
         personDao = new PersonDao(database);
+        notAllowed = Pattern.compile ("[%&*()+=|'\"<>{}\\-]");
     }
 
     
@@ -433,6 +437,14 @@ public class TitleDao implements Dao<Title, Integer> {
     
     
     public List<Title> searchTitlesByParameter(String parameter, String s) throws SQLException {
+        
+        Matcher isNotAllowed = notAllowed.matcher(s);
+        
+        if (isNotAllowed.find()) {
+            System.out.println("Special characters not allowed");
+            return null;
+        }
+        
         List<Title> titles = new ArrayList<>();
         
         Connection conn = database.getConnection();
@@ -462,6 +474,7 @@ public class TitleDao implements Dao<Title, Integer> {
             
             return titles;
         }
+        
         
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM Title WHERE Title." + parameter + " LIKE '%" + s + "%'");
@@ -576,5 +589,10 @@ public class TitleDao implements Dao<Title, Integer> {
         stmt.executeUpdate();
         stmt.close();
         conn.close();
+    }
+    
+    private boolean searchNotAllowed(String s) {
+        Matcher isNotAllowed = notAllowed.matcher(s);
+        return isNotAllowed.find();
     }
 }
