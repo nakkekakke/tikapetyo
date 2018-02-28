@@ -27,3 +27,6 @@ Yhden elokuvan oma sivu. Listaa paljon tietoja elokuvasta, kuten elokuvan näytt
 
 #### Henkilö- ja genresivut
 Yhden henkilön tai genren oma sivu. Sekä henkilön että genren sivuilla on lista henkilöön tai genreen liittyvistä elokuvista, sekä mahdollisuus poistaa henkilö tai genre delete-linkillä. Lisäksi henkilön sivulla näytetään henkilön mahdollinen biografia.
+
+
+Lisäile ja poistele kaikkea sovelluksessa olevaa niin paljon kuin vain haluat! Toteutimme sovelluksen niin, että aika ajoin kaikki tehdyt muutokset poistetaan joka tapauksessa. Kuitenkin jos satut tuhoamaan tietokannan totaalisesti, käytä piilotettua sivua **/resetDatabase** peruuttaaksesi kaikki tehdyt muutokset. :)
