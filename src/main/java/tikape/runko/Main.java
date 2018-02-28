@@ -32,7 +32,7 @@ public class Main {
         search.setPeople(personDao.findAllButDefault());
         search.setTitles(titleDao.findAll());
         
-        System.out.println(titleDao.findAll().size());
+        System.out.println("Movie database contains " + titleDao.findAll().size() + " items.");
         
         // Reset tool
         get("/resetDatabase", (req, res) -> {
