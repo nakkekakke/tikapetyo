@@ -60,13 +60,13 @@ public class Database {
                 System.out.println("Missing table: " + tableName);
                 System.out.println("Database is not valid. Resetting database...");
                 System.out.println("");
-                c.close();              
-                resetDatabase(true);        
+                c.close();
+                resetDatabase(true);
                 break;
             }
         }
 
-        c.close();   
+        c.close();
         System.out.println("Database is valid.");
 
     }
@@ -75,7 +75,7 @@ public class Database {
 
         System.out.println("--------------------------------------------------------------");
         System.out.println("Starting to reset database.");
-
+        
         if (!leaveEmpty) {
             System.out.println("Deleting database.");
 
@@ -108,10 +108,9 @@ public class Database {
                 stmt = c.prepareStatement("DROP TABLE " + tableName + ";");
                 stmt.execute();
                 stmt.close();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
         }
-
+    
         //Create new tables
         for (String table : tables) {
             String[] split = table.split(" ");

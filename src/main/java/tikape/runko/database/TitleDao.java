@@ -33,6 +33,9 @@ public class TitleDao implements Dao<Title, Integer> {
 
         // If empty
         if (!rs.next()) {
+            rs.close();
+            stmt.close();
+            conn.close();
             return null;
         }
 
@@ -61,6 +64,9 @@ public class TitleDao implements Dao<Title, Integer> {
 
         // If empty
         if (!rs.next()) {
+            rs.close();
+            stmt.close();
+            conn.close();
             return null;
         }
 
@@ -515,6 +521,9 @@ public class TitleDao implements Dao<Title, Integer> {
         
         // If empty
         if (!rs.next()) {
+            rs.close();
+            stmt.close();
+            conn.close();
             return null;
         }
         

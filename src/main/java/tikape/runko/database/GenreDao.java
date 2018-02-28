@@ -30,6 +30,9 @@ public class GenreDao implements Dao<Genre, Integer> {
         
         // If empty
         if (!rs.next()) {
+            rs.close();
+            stmt.close();
+            conn.close();
             return null;
         }
 
@@ -51,6 +54,9 @@ public class GenreDao implements Dao<Genre, Integer> {
         
         // If empty
         if (!rs.next()) {
+            rs.close();
+            stmt.close();
+            conn.close();
             return null;
         }
 
@@ -90,6 +96,7 @@ public class GenreDao implements Dao<Genre, Integer> {
             
             PreparedStatement userStmt = c.prepareStatement("INSERT INTO Genre (name) values ('" + genre + "');");
             userStmt.execute();
+            c.close();
             return getAndAddGenreId(genre);
         }
     }
@@ -160,6 +167,9 @@ public class GenreDao implements Dao<Genre, Integer> {
         
         // If empty
         if (!rs.next()) {
+            rs.close();
+            stmt.close();
+            conn.close();
             return null;
         }
         

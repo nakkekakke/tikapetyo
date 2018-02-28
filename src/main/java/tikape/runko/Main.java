@@ -43,6 +43,12 @@ public class Main {
             return null;
         }, new ThymeleafTemplateEngine());
         
+        get("/test", (req, res) -> {
+            HashMap map = new HashMap<>();
+            
+            return new ModelAndView(map, "Empty");
+        }, new ThymeleafTemplateEngine());
+        
         get("/resetDatabase/hard", (req, res) -> {
             
             database.resetDatabase(true);

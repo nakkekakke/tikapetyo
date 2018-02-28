@@ -28,6 +28,9 @@ public class PersonDao implements Dao<Person, Integer> {
         
         // If empty
         if (!rs.next()) {
+            rs.close();
+            stmt.close();
+            conn.close();
             return null;
         }
 
@@ -51,6 +54,9 @@ public class PersonDao implements Dao<Person, Integer> {
         
         // If empty
         if (!rs.next()) {
+            rs.close();
+            stmt.close();
+            conn.close();
             return null;
         }
 
@@ -156,6 +162,7 @@ public class PersonDao implements Dao<Person, Integer> {
             
             PreparedStatement userStmt = c.prepareStatement("INSERT INTO Person (name, bio) values ('" + user + "', 'Default bio');");
             userStmt.execute();
+            c.close();
             return getAndAddPersonId(user);
         }
     }
@@ -189,6 +196,9 @@ public class PersonDao implements Dao<Person, Integer> {
         
         // If empty
         if (!rs.next()) {
+            rs.close();
+            stmt.close();
+            conn.close();
             return null;
         }
         
@@ -239,9 +249,10 @@ public class PersonDao implements Dao<Person, Integer> {
         return person;
     }
     
-    
+    /*
     ////////// Check this, maybe delete? //////////
     public int defaultDirector() throws SQLException {  
         return getAndAddPersonId("Unknown director");        
     }
+    */
 }
