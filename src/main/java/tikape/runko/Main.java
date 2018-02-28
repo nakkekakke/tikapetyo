@@ -309,7 +309,7 @@ public class Main {
             return"";
         });
         
-        // Add information from IMBD site
+        // Add information from IMDB.com
         post("/addIMDB", (req, res) -> {
             
             imdb.addTitleFromIMDB(req.queryParams("link"));
