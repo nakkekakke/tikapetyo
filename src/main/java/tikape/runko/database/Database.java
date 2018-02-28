@@ -61,7 +61,7 @@ public class Database {
                 System.out.println("Database is not valid. Resetting database...");
                 System.out.println("");
                 c.close();
-                resetDatabase(true);
+                resetDatabase(false);
                 break;
             }
         }
