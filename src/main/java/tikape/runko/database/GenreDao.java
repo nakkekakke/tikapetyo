@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Genre;
-import tikape.runko.domain.Person;
 
 
 public class GenreDao implements Dao<Genre, Integer> {

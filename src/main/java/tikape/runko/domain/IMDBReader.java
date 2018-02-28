@@ -440,7 +440,7 @@ public class IMDBReader {
          */
         
         System.out.println("");
-        System.out.println("Succesfulky added template movies.");
+        System.out.println("Successfully added template movies.");
         System.out.println("-------------------------------------------------------------------------");
         
     }

@@ -58,7 +58,7 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         
         
-        // Add random movies from IMBD
+        // Add random movies from IMDB
         get("/addTemplates/:amount", (req, res) -> {
             imdb.addTemplateMovies(Integer.parseInt(req.params("amount")));
             
