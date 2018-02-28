@@ -400,14 +400,19 @@ public class Main {
         post("/controlStaff/:id", (req, res) -> {
             
             // Choose action based on which button was pressed
-            if (req.queryParams("button").equals("Add actor")) {
-                titleDao.addActor(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
-            } else if (req.queryParams("button").equals("Remove actor")) {
-                titleDao.removeActor(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
-            } else if (req.queryParams("button").equals("Add writer")) {
-                titleDao.addWriter(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
-            } else {
-                titleDao.removeWriter(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
+            switch (req.queryParams("button")) {
+                case "Add actor":
+                    titleDao.addActor(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
+                    break;
+                case "Remove actor":
+                    titleDao.removeActor(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
+                    break;
+                case "Add writer":
+                    titleDao.addWriter(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
+                    break;
+                default:
+                    titleDao.removeWriter(Integer.parseInt(req.params("id")), personDao.findOneWithName(req.queryParams("peopleDrop")).getId());
+                    break;
             }
             
             res.redirect("/titles/" + req.params("id"));
