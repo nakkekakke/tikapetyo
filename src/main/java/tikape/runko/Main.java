@@ -317,7 +317,7 @@ public class Main {
         post("/addPerson", (req, res) -> {
             
             // Check if name is empty
-            if (req.queryParams("name").isEmpty()) {
+            if (titleDao.searchNotAllowed(req.queryParams("name"))) {
                 res.redirect("/addError");
                 return"";
             }
@@ -334,7 +334,7 @@ public class Main {
         post("/addGenre", (req, res) -> {
             
             // Check if name is empty
-            if (req.queryParams("name").isEmpty()) {
+            if (titleDao.searchNotAllowed(req.queryParams("name"))) {
                 res.redirect("/addError");
                 return"";
             }

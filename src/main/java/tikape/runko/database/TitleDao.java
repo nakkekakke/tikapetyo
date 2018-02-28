@@ -23,7 +23,7 @@ public class TitleDao implements Dao<Title, Integer> {
         this.database = database;
         genreDao = new GenreDao(database);
         personDao = new PersonDao(database);
-        notAllowed = Pattern.compile ("[%&*()+=|'\"<>{}\\-]");
+        notAllowed = Pattern.compile ("[%&*()+=|\"<>{}\\-]");
     }
 
     
@@ -438,9 +438,7 @@ public class TitleDao implements Dao<Title, Integer> {
     
     public List<Title> searchTitlesByParameter(String parameter, String s) throws SQLException {
         
-        Matcher isNotAllowed = notAllowed.matcher(s);
-        
-        if (isNotAllowed.find()) {
+        if (searchNotAllowed(s)) {
             System.out.println("Special characters not allowed");
             return null;
         }
@@ -591,8 +589,12 @@ public class TitleDao implements Dao<Title, Integer> {
         conn.close();
     }
     
-    private boolean searchNotAllowed(String s) {
+    public boolean searchNotAllowed(String s) {
         Matcher isNotAllowed = notAllowed.matcher(s);
+        if (s.equals("'") || s.isEmpty()) {
+            return true;
+        }
+        
         return isNotAllowed.find();
     }
 }
