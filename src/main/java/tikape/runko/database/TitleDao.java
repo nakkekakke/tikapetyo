@@ -438,7 +438,7 @@ public class TitleDao implements Dao<Title, Integer> {
     
     public List<Title> searchTitlesByParameter(String parameter, String s) throws SQLException {
         
-        if (searchNotAllowed(s)) {
+        if (invalidInput(s)) {
             System.out.println("Special characters not allowed");
             return null;
         }
@@ -589,9 +589,18 @@ public class TitleDao implements Dao<Title, Integer> {
         conn.close();
     }
     
-    public boolean searchNotAllowed(String s) {
+    public boolean invalidInputOrEmpty(String s) {
         Matcher isNotAllowed = notAllowed.matcher(s);
         if (s.equals("'") || s.isEmpty()) {
+            return true;
+        }
+        
+        return isNotAllowed.find();
+    }
+    
+    public boolean invalidInput(String s) {
+        Matcher isNotAllowed = notAllowed.matcher(s);
+        if (s.equals("'")) {
             return true;
         }
         

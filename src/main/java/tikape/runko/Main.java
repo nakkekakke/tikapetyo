@@ -279,7 +279,7 @@ public class Main {
                 res.redirect("/addError");
                 return"";
             }
-            if (titleDao.searchNotAllowed(req.queryParams("name"))) {
+            if (titleDao.invalidInputOrEmpty(req.queryParams("name"))) {
                 res.redirect("/addError");
                 return"";
             }
@@ -292,6 +292,11 @@ public class Main {
                 return"";
             }
             // Description can be empty
+            if (titleDao.invalidInput(req.queryParams("description"))) {
+                res.redirect("/addError");
+                return"";
+            }
+            
             
             
             Title title = new Title(
@@ -322,7 +327,7 @@ public class Main {
         post("/addPerson", (req, res) -> {
             
             // Check if name is invalid
-            if (titleDao.searchNotAllowed(req.queryParams("name"))) {
+            if (titleDao.invalidInputOrEmpty(req.queryParams("name"))) {
                 res.redirect("/addError");
                 return"";
             }
@@ -339,7 +344,7 @@ public class Main {
         post("/addGenre", (req, res) -> {
             
             // Check if name is invalid
-            if (titleDao.searchNotAllowed(req.queryParams("name"))) {
+            if (titleDao.invalidInputOrEmpty(req.queryParams("name"))) {
                 res.redirect("/addError");
                 return"";
             }
