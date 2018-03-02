@@ -450,7 +450,7 @@ public class TitleDao implements Dao<Title, Integer> {
         if (parameter.equals("genre")) {
             
             PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT Title.* FROM Title, Genre WHERE Title.genre_id = Genre.id AND Genre.name LIKE '%" + s + "%'");
+                    "SELECT Title.* FROM Title, Genre WHERE Title.genre_id = Genre.id AND Genre.name LIKE '%" + s + "%' Order By Title.name");
             ResultSet rs = stmt.executeQuery();
             
             while (rs.next()) {
@@ -475,7 +475,7 @@ public class TitleDao implements Dao<Title, Integer> {
         
         
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM Title WHERE Title." + parameter + " LIKE '%" + s + "%'");
+                "SELECT * FROM Title WHERE Title." + parameter + " LIKE '%" + s + "%' Order By Title.name");
         ResultSet rs = stmt.executeQuery();
 
         while (rs.next()) {
