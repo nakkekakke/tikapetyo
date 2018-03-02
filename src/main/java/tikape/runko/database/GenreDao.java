@@ -104,7 +104,7 @@ public class GenreDao implements Dao<Genre, Integer> {
     @Override
     public List<Genre> findAll() throws SQLException {
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Genre");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Genre Group By Genre.name");
         ResultSet rs = stmt.executeQuery();
         
         List<Genre> genres = new ArrayList<>();

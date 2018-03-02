@@ -74,7 +74,7 @@ public class PersonDao implements Dao<Person, Integer> {
     public List<Person> findAll() throws SQLException {
         
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person Group By Person.name");
         ResultSet rs = stmt.executeQuery();
 
         List<Person> persons = new ArrayList<>();
@@ -98,7 +98,7 @@ public class PersonDao implements Dao<Person, Integer> {
     public List<Person> findAllButDefault() throws SQLException {
         
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person WHERE id > 1");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Person WHERE id > 1 Group By Person.name");
         ResultSet rs = stmt.executeQuery();
 
         List<Person> persons = new ArrayList<>();
@@ -214,7 +214,7 @@ public class PersonDao implements Dao<Person, Integer> {
         
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM Person WHERE Person.name LIKE '%" + name + "%';");
+                "SELECT * FROM Person WHERE Person.name LIKE '%" + name + "%' Group By Person.name;");
         ResultSet rs = stmt.executeQuery();
 
         List<Person> persons = new ArrayList<>();

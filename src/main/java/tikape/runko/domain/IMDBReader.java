@@ -463,6 +463,10 @@ public class IMDBReader {
 
         for (String s : actors) {
 
+            if (s.contains("<")) {
+                continue;
+            }
+            
             int actor_id = personDao.getAndAddPersonId(s);
             titleDao.addActor(title_id, actor_id);
 

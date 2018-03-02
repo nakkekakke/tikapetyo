@@ -92,7 +92,7 @@ public class TitleDao implements Dao<Title, Integer> {
     public List<Title> findAll() throws SQLException {
 
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Title Group By Title.name");
         ResultSet rs = stmt.executeQuery();
 
         List<Title> titles = new ArrayList<>();
@@ -126,7 +126,7 @@ public class TitleDao implements Dao<Title, Integer> {
         
         
         // Actor
-        PreparedStatement stmt2 = conn.prepareStatement("SELECT title_id FROM ActorTitle WHERE ActorTitle.actor_id = ?");
+        PreparedStatement stmt2 = conn.prepareStatement("SELECT title_id FROM ActorTitle WHERE ActorTitle.actor_id = ? Group By Title.name");
         stmt2.setInt(1, person_id);
         
         ResultSet rs2 = stmt2.executeQuery();
