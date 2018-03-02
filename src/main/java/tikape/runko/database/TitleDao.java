@@ -126,7 +126,7 @@ public class TitleDao implements Dao<Title, Integer> {
         
         
         // Actor
-        PreparedStatement stmt2 = conn.prepareStatement("SELECT title_id FROM ActorTitle WHERE ActorTitle.actor_id = ? Group By Title.name");
+        PreparedStatement stmt2 = conn.prepareStatement("SELECT title_id FROM ActorTitle WHERE ActorTitle.actor_id = ?");
         stmt2.setInt(1, person_id);
         
         ResultSet rs2 = stmt2.executeQuery();
