@@ -32,3 +32,11 @@ Yhden henkilön tai genren oma sivu. Sekä henkilön että genren sivuilla on li
 </br>
 
 Lisäile ja poistele kaikkea sovelluksessa olevaa niin paljon kuin vain haluat! Toteutimme sovelluksen niin, että aika ajoin kaikki tehdyt muutokset poistetaan joka tapauksessa. Kuitenkin jos satut tuhoamaan tietokannan totaalisesti, käytä piilotettua sivua **/resetDatabase** peruuttaaksesi kaikki tehdyt muutokset. :)
+
+
+#### COPYRIGHT
+https://www.imdb.com/licensing/subservicetc/?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=24a4f514-e7c0-4ffb-9985-f9aaa3587145&pf_rd_r=1NCJVSQPCEDJ6T8HPDVH&pf_rd_s=center-1&pf_rd_t=60601&pf_rd_i=licensing&ref_=fea_cln_lk2
+IMDb Content Subscription Service Terms and Conditions
+IMDb Content 2.B
+
+IMDb Title ID and IMDb Name IDs. Notwithstanding the foregoing license set forth in Section 2.a above, we grant you a nonexclusive and sublicenseable right to use, reproduce, publish, distribute, and display any IMDb Title ID or an IMDb Name ID (which are alternatively known as “IMDb Tconst” for IMDb Title IDs and “IMDb Nconst” for IMDb Name IDs) throughout the world in any media.
